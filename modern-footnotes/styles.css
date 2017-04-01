@@ -1,0 +1,36 @@
+.modern-footnotes-footnote {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+.modern-footnotes-footnote--selected {
+	background: #eee;
+	border-radius: 2px;
+}
+.modern-footnotes-footnote__connector {
+	background: #000;
+	position: absolute;
+	width: 0.9px; /* use 0.9px instead of 1px to ensure the element does not look 2 px thick in Firefox in some scenarios */
+}
+.modern-footnotes-footnote a {
+	text-decoration: none;
+}
+.modern-footnotes-footnote__note {
+	display: none;
+}
+.modern-footnotes-footnote__note--desktop {
+	position: absolute;
+	border: 1px solid #666;
+	background: #fff;
+	padding: 0.7em 1em;
+	border-radius: 3px;
+	max-width: 300px;
+	box-shadow: 1px 1px 1px #eee;
+	box-sizing: border-box;
+}
+.modern-footnotes-footnote__note--mobile {
+	display: block;
+	color: #777;
+	font-size: 80%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}

@@ -24,6 +24,7 @@ On mobile, footnotes will expand as a section below the current text.
 3. Use footnotes in your posts by enclosing them in double parenthesis, ((like this)). The plugin will automatically associate sequential numbers with each plugin.
 4. If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
+.modern-footnotes-footnote--selected - A superscript element that is currently active
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
@@ -34,6 +35,7 @@ Use footnotes in your posts by enclosing them in double parenthesis, ((like this
 =Can I customize the styles of footnotes?=
 If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
+.modern-footnotes-footnote--selected - A superscript element that is currently active
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
