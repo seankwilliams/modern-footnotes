@@ -23,6 +23,7 @@ On desktop, footnotes will appear as a tooltip when the user clicks on the numbe
 4. If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
 .modern-footnotes-footnote--selected - A superscript element that is currently active
+.modern-footnotes-footnote__note – Styling that applies to both mobile and desktop footnotes
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
@@ -34,6 +35,7 @@ Use a footnote in your post by using the footnote icon in the WordPress editor o
 If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
 .modern-footnotes-footnote--selected - A superscript element that is currently active
+.modern-footnotes-footnote__note – Styling that applies to both mobile and desktop footnotes
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 

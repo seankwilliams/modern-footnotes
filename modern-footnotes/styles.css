@@ -45,6 +45,7 @@
 	max-width: 300px;
 	box-shadow: 1px 1px 1px #eee;
 	box-sizing: border-box;
+	z-index: 1;
 }
 .modern-footnotes-footnote__note--mobile {
 	display: block;
