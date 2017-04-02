@@ -16,6 +16,8 @@
 }
 .modern-footnotes-footnote__note {
 	display: none;
+	font-size: 80%;
+	color: #777;
 }
 .modern-footnotes-footnote__note--desktop {
 	position: absolute;
@@ -29,8 +31,6 @@
 }
 .modern-footnotes-footnote__note--mobile {
 	display: block;
-	color: #777;
-	font-size: 80%;
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
