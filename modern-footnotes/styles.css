@@ -34,3 +34,7 @@
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+
+.mce-i-modern-footnotes-admin-button {
+	background: url(mce-button.png) !important;
+}
