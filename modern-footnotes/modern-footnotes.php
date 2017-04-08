@@ -29,25 +29,6 @@ function modern_footnotes_reset_count() {
 	$modern_footnotes_count = 1;
 }
 
-function modern_footnotes_activate() {
-	try {
-		file_get_contents('http://prismtechstudios.com/modern-footnotes/activate.php?' .
-							'd=' . urlencode($_SERVER['SERVER_NAME']));
-	} catch (Exception $ex) {
-		//do nothing
-	}
-}
-
-function modern_footnotes_deactivate() {
-	try {
-		file_get_contents('http://prismtechstudios.com/modern-footnotes/deactivate.php?d=' . urlencode($_SERVER['SERVER_NAME']));
-	} catch (Exception $ex) {
-		//do nothing
-	}
-}
-
-register_activation_hook(__FILE__, 'modern_footnotes_activate');
-register_deactivation_hook(__FILE__, 'modern_footnotes_deactivate');
 add_shortcode('modern_footnote', 'modern_footnotes_func');
 add_shortcode('mfn', 'modern_footnotes_func');
 add_filter('the_post', 'modern_footnotes_reset_count');
