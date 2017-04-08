@@ -32,13 +32,13 @@ jQuery(function($) {
 					.removeClass('modern-footnotes-footnote__note--mobile');
 				//calculate the position for the footnote
 				var position = $(this).parent().position();
-				var lineHeight = $(this).parent().parent().css('line-height').replace(/px/, '');
+				var fontHeight = Math.floor(parseInt($(this).parent().parent().css('font-size').replace(/px/, '')) * 1.5);
 				var footnoteWidth = $footnoteContent.outerWidth();
 				var windowWidth = $(window).width();
 				var left = position.left - footnoteWidth / 2
 				if (left < 0) left = 8 // leave some margin on left side of screen
 				if (left + footnoteWidth > $(window).width()) left = $(window).width() - footnoteWidth;
-				var top = (parseInt(position.top) + parseInt(lineHeight));
+				var top = (parseInt(position.top) + parseInt(fontHeight));
 				$footnoteContent.css({
 					top: top + 'px',
 					left: left + 'px'

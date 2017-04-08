@@ -1,7 +1,7 @@
 === Modern Footnotes ===
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
-Requires at least: 4.7.3
+Requires at least: 4.4.8
 Tested up to: 4.7.3
 Stable tag: trunk
 License: GNU Lesser General Public License v3
