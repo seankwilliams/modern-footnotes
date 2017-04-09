@@ -38,23 +38,23 @@ wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnot
 
 //modify the admin
 
-function add_container_button() {
+function modern_footnotes_add_container_button() {
 	if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
 		return;
 	if ( get_user_option('rich_editing') == 'true') {
-		add_filter('mce_external_plugins', 'add_container_plugin');
-		add_filter('mce_buttons', 'register_container_button');
+		add_filter('mce_external_plugins', 'modern_footnotes_add_container_plugin');
+		add_filter('mce_buttons', 'modern_footnotes_register_container_button');
 	}
 }
-add_action('init', 'add_container_button');
+add_action('init', 'modern_footnotes_add_container_button');
 
 
-function register_container_button($buttons) {
+function modern_footnotes_register_container_button($buttons) {
 	array_push($buttons, "modern_footnotes");
 	return $buttons;
 }
 
-function add_container_plugin($plugin_array) {
+function modern_footnotes_add_container_plugin($plugin_array) {
 	$plugin_array['modern_footnotes'] = plugin_dir_url(__FILE__) . 'modern-footnotes.mce-button.min.js';
 	return $plugin_array;
 }
