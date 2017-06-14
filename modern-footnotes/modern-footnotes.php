@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.0
+Version:     1.0.1
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     Lesser GPL3
@@ -33,8 +33,8 @@ add_shortcode('modern_footnote', 'modern_footnotes_func');
 add_shortcode('mfn', 'modern_footnotes_func');
 add_filter('the_post', 'modern_footnotes_reset_count');
 
-wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.0');
-wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.0', TRUE);
+wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.0.1'); 
+wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.0.1', TRUE);
 
 //modify the admin
 

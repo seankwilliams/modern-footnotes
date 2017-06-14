@@ -20,14 +20,12 @@ jQuery(function($) {
 		e.stopPropagation();
 		var $footnoteContent = $(this).parent().next('.modern-footnotes-footnote__note');
 		if ($footnoteContent.is(":hidden")) {
-			if ($(window).width() >= 768) { //only allow one footnote to be open at a time on desktop
-				modern_footnotes_hide_footnotes();
-			}
-			$footnoteContent.toggle();
 			if ($(window).width() >= 768) { //use same size as bootstrap for mobile
 				//desktop
+				modern_footnotes_hide_footnotes(); //only allow one footnote to be open at a time on desktop
 				$(this).parent().toggleClass('modern-footnotes-footnote--selected');
 				$footnoteContent
+					.show()
 					.addClass('modern-footnotes-footnote__note--desktop')
 					.removeClass('modern-footnotes-footnote__note--mobile');
 				//calculate the position for the footnote

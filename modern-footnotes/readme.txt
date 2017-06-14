@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 4.8
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GNU Lesser General Public License v3
 License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
