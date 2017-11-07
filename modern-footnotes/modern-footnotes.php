@@ -17,7 +17,8 @@ $modern_footnotes_count = 1;
 
 function modern_footnotes_func($atts, $content = "") {
 	global $modern_footnotes_count;
-	if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips') == TRUE) {
+	$settings = get_option('modern_footnotes_settings');
+	if ($settings['use_expandable_footnotes_on_desktop_instead_of_tooltips'] == TRUE) {
 		body_class('modern-footnotes--use-expandble-footnotes-desktop');
 	}
 	$content = '<sup class="modern-footnotes-footnote"><a href="#">' . $modern_footnotes_count . '</a></sup>' .
@@ -45,7 +46,7 @@ wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnot
 
 //create a settings page
 function modern_footnotes_menu() {
-	add_options_page( 'Modern Footnotes Options', 'Modern Footnotes', 'manage_options', 'modern-footnotes', 'modern_footnotes_options' );
+	add_options_page( 'Modern Footnotes Options', 'Modern Footnotes', 'manage_options', __FILE__, 'modern_footnotes_options' );
 }
 
 function modern_footnotes_options() {
@@ -55,20 +56,48 @@ function modern_footnotes_options() {
 	echo '<div class="wrap">';
 	echo '<h1>Modern Footnotes Options</h1>';
 	echo '<form method="post" action="options.php">';
-	settings_fields('modern-footnotes-option-group');
-	do_settings_sections('modern-footnotes-option-group');
+	settings_fields(__FILE__);
+	do_settings_sections(__FILE__);
 	submit_button();
 	echo '</form>';
 	echo '</div>';
 }
 
 function modern_footnotes_register_settings() { // whitelist options
-  register_setting('modern-footnotes-option-group', 'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips');
+	register_setting('modern_footnotes_settings', 'modern_footnotes_settings',
+				array(
+					'type' => 'boolean',
+					'default' => FALSE,
+					'sanitize_callback' => function($plugin_options) {  return $plugin_options;}
+				));
+	add_settings_section(
+		'modern_footnotes_option_group_section',
+		'Modern Footnotes Settings',
+		function() { /* do nothing, no HTML needed for section heading */ },
+		__FILE__
+	);
+	add_settings_field(
+		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips',
+		'Expandable footnotes on desktop',
+		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section'
+	);
+}
+
+function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback() {
+	$options = get_option('modern_footnotes_settings');
+	var_dump($options);
+	
+	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, $options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
+	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style (this will make the desktop footnotes look how they do on mobile)</label>';
+
+	echo $html;
 }
 
 if (is_admin()) { // admin actions
-  add_action( 'admin_menu', 'modern_footnotes_menu' );
-  add_action( 'admin_init', 'modern_footnotes_register_settings' );
+	add_action( 'admin_menu', 'modern_footnotes_menu' );
+	add_action( 'admin_init', 'modern_footnotes_register_settings' );
 }
 
 //setup button on the WordPress editor
