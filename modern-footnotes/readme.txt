@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
-Tested up to: 4.8
-Stable tag: 1.0.1
+Tested up to: 4.8.3
+Stable tag: 1.1.0
 License: GNU Lesser General Public License v3
 License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
@@ -31,6 +31,9 @@ On desktop, footnotes will appear as a tooltip when the user clicks on the numbe
 =How do I create a footnote?=
 Use a footnote in your post by using the footnote icon in the WordPress editor or by using the shortcode: [mfn]this will be a footnote[/mfn]
 
+=Can I make desktop footnotes expand like they do on mobile instead of using tooltips?=
+Yes. Go to Settings -> Modern Footnotes and choose the "Expandable footnotes on desktop" option.
+
 =Can I customize the styles of footnotes?=
 If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
@@ -46,3 +49,4 @@ If you want to customize the styles, you can do so by overriding the following s
 
 == Changelog ==
 1.0 - 4/1/17 - initial version.
+1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.

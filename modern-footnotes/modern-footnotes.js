@@ -20,14 +20,14 @@ jQuery(function($) {
 		e.stopPropagation();
 		var $footnoteContent = $(this).parent().next('.modern-footnotes-footnote__note');
 		if ($footnoteContent.is(":hidden")) {
-			if ($(window).width() >= 768) { //use same size as bootstrap for mobile
-				//desktop
+			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
+				//tooltip style
 				modern_footnotes_hide_footnotes(); //only allow one footnote to be open at a time on desktop
 				$(this).parent().toggleClass('modern-footnotes-footnote--selected');
 				$footnoteContent
 					.show()
-					.addClass('modern-footnotes-footnote__note--desktop')
-					.removeClass('modern-footnotes-footnote__note--mobile');
+					.addClass('modern-footnotes-footnote__note--tooltip')
+					.removeClass('modern-footnotes-footnote__note--expandable');
 				//calculate the position for the footnote
 				var position = $(this).parent().position();
 				var fontHeight = Math.floor(parseInt($(this).parent().parent().css('font-size').replace(/px/, '')) * 1.5);
@@ -53,10 +53,10 @@ jQuery(function($) {
 					left: (superscriptPosition.left + superscriptWidth / 2) + 'px'
 				});
 			} else {
-				//mobile
+				//expandable style
 				$footnoteContent
-					.removeClass('modern-footnotes-footnote__note--desktop')
-					.addClass('modern-footnotes-footnote__note--mobile')
+					.removeClass('modern-footnotes-footnote__note--tooltip')
+					.addClass('modern-footnotes-footnote__note--expandable')
 					.css('display', 'block');	
 				$(this).data('unopenedContent', $(this).html());
 				$(this).html('x');
