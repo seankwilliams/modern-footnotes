@@ -20,7 +20,7 @@ jQuery(function($) {
 		e.stopPropagation();
 		var $footnoteContent = $(this).parent().next('.modern-footnotes-footnote__note');
 		if ($footnoteContent.is(":hidden")) {
-			if ($(window).width() >= 768 && $("body").is(":not(.modern-footnotes--use-expandble-footnotes-desktop)")) { //use same size as bootstrap for mobile
+			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
 				//tooltip style
 				modern_footnotes_hide_footnotes(); //only allow one footnote to be open at a time on desktop
 				$(this).parent().toggleClass('modern-footnotes-footnote--selected');

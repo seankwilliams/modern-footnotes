@@ -17,11 +17,12 @@ $modern_footnotes_count = 1;
 
 function modern_footnotes_func($atts, $content = "") {
 	global $modern_footnotes_count;
+	$additional_classes = '';
 	$settings = get_option('modern_footnotes_settings');
-	if ($settings['use_expandable_footnotes_on_desktop_instead_of_tooltips'] == TRUE) {
-		body_class('modern-footnotes--use-expandble-footnotes-desktop');
+	if (isset($settings['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $settings['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
+		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
-	$content = '<sup class="modern-footnotes-footnote"><a href="#">' . $modern_footnotes_count . '</a></sup>' .
+	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="#">' . $modern_footnotes_count . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note">' . $content . '</span>';
 	$modern_footnotes_count++;
 	return $content;
@@ -56,7 +57,7 @@ function modern_footnotes_options() {
 	echo '<div class="wrap">';
 	echo '<h1>Modern Footnotes Options</h1>';
 	echo '<form method="post" action="options.php">';
-	settings_fields(__FILE__);
+	settings_fields('modern_footnotes_settings');
 	do_settings_sections(__FILE__);
 	submit_button();
 	echo '</form>';
@@ -87,10 +88,9 @@ function modern_footnotes_register_settings() { // whitelist options
 
 function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback() {
 	$options = get_option('modern_footnotes_settings');
-	var_dump($options);
 	
-	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, $options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
-	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style (this will make the desktop footnotes look how they do on mobile)</label>';
+	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
+	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style</label>';
 
 	echo $html;
 }
