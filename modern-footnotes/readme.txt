@@ -49,4 +49,4 @@ If you want to customize the styles, you can do so by overriding the following s
 
 == Changelog ==
 1.0 - 4/1/17 - initial version.
-1.1 - 10/31/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
+1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
