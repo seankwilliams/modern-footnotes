@@ -69,7 +69,7 @@ function modern_footnotes_register_settings() { // whitelist options
 				array(
 					'type' => 'boolean',
 					'default' => FALSE,
-					'sanitize_callback' => function($plugin_options) {  return $plugin_options;}
+					'sanitize_callback' => 'modern_footnotes_sanitize_callback'
 				));
 	add_settings_section(
 		'modern_footnotes_option_group_section',
@@ -84,6 +84,10 @@ function modern_footnotes_register_settings() { // whitelist options
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
+}
+
+function modern_footnotes_sanitize_callback($plugin_options) {  
+	return $plugin_options;
 }
 
 function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback() {
