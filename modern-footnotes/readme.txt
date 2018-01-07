@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 4.9
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GNU Lesser General Public License v3
 License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
@@ -50,3 +50,4 @@ If you want to customize the styles, you can do so by overriding the following s
 == Changelog ==
 1.0 - 4/1/17 - initial version.
 1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
+1.1.1 - 1/6/18 - Fixed problem where scripts were enqueued incorrectly.
