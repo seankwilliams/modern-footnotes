@@ -77,6 +77,21 @@ jQuery(function($) {
 	$(window).resize(function() {
 		modern_footnotes_hide_footnotes();
 	});
+	
+	//some plugins, like TablePress, cause shortcodes to be rendered
+	//in a different order than they appear in the HTML. This can cause
+	//the numbering to be out of order. I couldn't find a way to deal
+	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
+	//will correct the numbering if it's not sequential.
+	var $footnotesAnchorLinks = $(".modern-footnotes-footnote a");
+	if ($footnotesAnchorLinks.length > 1) {
+		$footnotesAnchorLinks.each(function(index) {
+			if ($(this).html() != (index + 1)) {
+				$(this).html(index + 1);
+			}
+		});
+	}
+	
 });
 
 
