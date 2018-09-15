@@ -57,6 +57,14 @@ function modern_footnotes_enqueue_scripts() {
 
 add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts'); 
 
+if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
+	add_action( 'wp_head', 'modern_footnotes_output_custom_css' );
+}
+
+function modern_footnotes_output_custom_css() {
+	echo '<style>' . $modern_footnotes_options['modern_footnotes_custom_css'] . '</style>';
+}
+
 //
 //modify the admin
 //
@@ -101,6 +109,13 @@ function modern_footnotes_register_settings() { // whitelist options
 		'modern_footnotes_option_group_section'
 	);
 	add_settings_field(
+		'modern_footnotes_custom_css',
+		'Modern Footnotes Custom CSS',
+		'modern_footnotes_custom_css_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section'
+	);
+	add_settings_field(
 		'modern_footnotes_custom_shortcode',
 		'Modern Footnotes Custom Shortcode',
 		'modern_footnotes_custom_shortcode_element_callback',
@@ -111,6 +126,12 @@ function modern_footnotes_register_settings() { // whitelist options
 
 function modern_footnotes_sanitize_callback($plugin_options) {  
 	global $modern_footnotes_options;
+	
+	if (isset($plugin_options['modern_footnotes_custom_css']) && !empty($plugin_options['modern_footnotes_custom_css'])) {
+		//strip style HTML tags from the custom CSS property
+		$plugin_options['modern_footnotes_custom_css'] = preg_replace('/</?style.*?>/i', '', $plugin_options['modern_footnotes_custom_css']);
+	}
+	
 	if (isset($plugin_options['modern_footnotes_custom_shortcode']) && !empty($plugin_options['modern_footnotes_custom_shortcode'])) {
 		//remove invalid characters from shortcode
 		$plugin_options['modern_footnotes_custom_shortcode'] = preg_replace('/[^a-zA-Z0-9-_]/i', '', $plugin_options['modern_footnotes_custom_shortcode']);
@@ -128,6 +149,15 @@ function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltip
 	
 	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
 	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style</label>';
+
+	echo $html;
+}
+
+function modern_footnotes_custom_css_element_callback() {
+	global $modern_footnotes_options;
+	
+	$html = '<textarea id="modern_footnotes_custom_css" name="modern_footnotes_settings[modern_footnotes_custom_css]">' . (isset($modern_footnotes_options['modern_footnotes_custom_css']) ? $modern_footnotes_options['modern_footnotes_custom_css'] : '') . '</textarea>';
+	$html .= '<label for="modern_footnotes_custom_css">Enter any custom CSS for the plugin, without any &lt;style&gt; tags.</label>';
 
 	echo $html;
 }
