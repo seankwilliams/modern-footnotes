@@ -15,17 +15,24 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
-$modern_footnotes_count = 1;
+$modern_footnotes_used_reference_numbers = array(); //keeps track of what reference numbers have been used
 
 function modern_footnotes_func($atts, $content = "") {
-	global $modern_footnotes_count, $modern_footnotes_options;
+	global $modern_footnotes_used_reference_numbers, $modern_footnotes_options;
 	$additional_classes = '';
 	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
-	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="javascript:void(0)">' . $modern_footnotes_count . '</a></sup>' .
+	if (isset($atts['referencenumber'])) {
+		$display_number = $atts['referencenumber'];
+	} else if (count($modern_footnotes_used_reference_numbers) == 0) {
+		$display_number = 1;
+	} else {
+		$display_number = max($modern_footnotes_used_reference_numbers) + 1;
+	}
+	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="javascript:void(0)">' . $display_number . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note">' . $content . '</span>';
-	$modern_footnotes_count++;
+	$modern_footnotes_used_reference_numbers[] = $display_number;
 	return $content;
 }
 
