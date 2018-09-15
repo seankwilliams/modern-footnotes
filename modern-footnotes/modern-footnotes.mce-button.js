@@ -44,7 +44,7 @@ tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
 						label: 'Footnote'
 					}],
 					onsubmit: function( e ) {
-						editor.insertContent( '[modern_footnote]' + e.data.footnote + '[/modern_footnote]');
+						editor.insertContent( '[mfn]' + e.data.footnote + '[/mfn]');
 					}
 				});
 			}
