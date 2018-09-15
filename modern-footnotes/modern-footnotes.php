@@ -23,7 +23,7 @@ function modern_footnotes_func($atts, $content = "") {
 	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
-	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="#">' . $modern_footnotes_count . '</a></sup>' .
+	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="javascript:void(0)">' . $modern_footnotes_count . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note">' . $content . '</span>';
 	$modern_footnotes_count++;
 	return $content;
