@@ -84,10 +84,24 @@ jQuery(function($) {
 	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
 	//will correct the numbering if it's not sequential.
 	var $footnotesAnchorLinks = $(".modern-footnotes-footnote a");
+	var usedReferenceNumbers = [0];
 	if ($footnotesAnchorLinks.length > 1) {
-		$footnotesAnchorLinks.each(function(index) {
-			if ($(this).html() != (index + 1)) {
-				$(this).html(index + 1);
+		$footnotesAnchorLinks.each(function() {
+			if ($(this).is("a[refnum]")) {
+				var manualRefNum = $(this).attr("refnum");
+				if ($(this).html() != manualRefNum) {
+					$(this).html(manualRefNum);
+				}
+				if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
+					usedReferenceNumbers.push(manualRefNum);
+				}
+			}
+			else {
+				var refNum = Math.max.apply(null, usedReferenceNumbers) + 1;
+				if ($(this).html() != refNum) {
+					$(this).html(refNum);
+				}
+				usedReferenceNumbers.push(refNum);
 			}
 		});
 	}
