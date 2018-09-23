@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.1.4
+Version:     1.2
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     Lesser GPL3
@@ -55,8 +55,8 @@ add_filter('the_post', 'modern_footnotes_reset_count');
 
 function modern_footnotes_enqueue_scripts() {
 	global $modern_footnotes_options;
-	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.1.4');
-	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.1.4', TRUE); 
+	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.2');
+	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.2', TRUE); 
 	
 	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
 		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
@@ -189,7 +189,7 @@ if (is_admin()) {
 	add_action('init', 'modern_footnotes_add_container_button');
 	
 	function modern_footnotes_enqueue_admin_scripts() {
-		wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.admin.min.css', array(), '1.1.4');
+		wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.admin.min.css', array(), '1.2');
 	}
 
 	add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
