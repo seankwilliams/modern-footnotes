@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 4.9.2
-Stable tag: 1.1.4
+Stable tag: 1.2
 License: GNU Lesser General Public License v3
 License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
@@ -20,7 +20,8 @@ On desktop, footnotes will appear as a tooltip when the user clicks on the numbe
 1. Upload the modern-footnotes folder to your wp-content/plugins directory.
 2. Activate the plugin in the WordPress Plugins section.
 3. Use a footnote in your post by using the footnote icon in the WordPress editor or by using the shortcode: [mfn]this will be a footnote[/mfn] 
-4. If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
+4. Reference numbers will be automatically assigned sequentially so the first footnote is labeled 1, then the next footnote is 2, then 3, etc. You can specify custom reference numbers by using the "referencenumber" attribute to specify a particular reference number. For example: [mfn referencenumber=3]This will have the number 3 with it.[/mfn] 
+5. If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
 .modern-footnotes-footnote--selected - A superscript element that is currently active
 .modern-footnotes-footnote__note – Styling that applies to both mobile and desktop footnotes
@@ -33,6 +34,9 @@ Use a footnote in your post by using the footnote icon in the WordPress editor o
 
 =Can I make desktop footnotes expand like they do on mobile instead of using tooltips?=
 Yes. Go to Settings -> Modern Footnotes and choose the "Expandable footnotes on desktop" option.
+
+=Can I customize the reference numbers output by the plugin?=
+Yes. You can specify custom reference numbers by using the "referencenumber" attribute to specify a particular reference number. For example: [mfn referencenumber=3]This will have the number 3 with it.[/mfn] 
 
 =Can I customize the styles of footnotes?=
 If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
@@ -54,3 +58,4 @@ If you want to customize the styles, you can do so by overriding the following s
 1.1.2 - 1/6/18 - Fixed problem where scripts were enqueued incorrectly.
 1.1.3 - 1/11/18 - Fixed issue where icon was not showing in the admin MCE editor
 1.1.4 - 1/27/18 - Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
+1.2 - 9/14/18 - Stopped using href="#" for <a> elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.

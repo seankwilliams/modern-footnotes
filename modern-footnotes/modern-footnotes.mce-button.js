@@ -27,7 +27,7 @@ tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
 			if (content.length > 0) {
 				if (content.indexOf('[modern_footnote]') == -1 && content.indexOf('[/modern_footnote]') == -1 &&
 					content.indexOf('[mfn]') == -1 && content.indexOf('[/mfn]') == -1) {
-					editor.selection.setContent('[modern_footnote]' + content + '[/modern_footnote]');
+					editor.selection.setContent('[mfn]' + content + '[/mfn]');
 				} else if (content.indexOf('[modern_footnote]') != -1 && content.indexOf('[/modern_footnote]') != -1) {
 					editor.selection.setContent(content.replace(/\[modern\_footnote\]/, '').replace(/\[\/modern\_footnote\]/, ''));
 				} else if (content.indexOf('[mfn]') != -1 && content.indexOf('[/mfn]') != -1) {
@@ -44,7 +44,7 @@ tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
 						label: 'Footnote'
 					}],
 					onsubmit: function( e ) {
-						editor.insertContent( '[modern_footnote]' + e.data.footnote + '[/modern_footnote]');
+						editor.insertContent( '[mfn]' + e.data.footnote + '[/mfn]');
 					}
 				});
 			}

@@ -13,18 +13,29 @@ License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_count = 1;
+$modern_footnotes_options = get_option('modern_footnotes_settings');
+
+$modern_footnotes_used_reference_numbers = array(); //keeps track of what reference numbers have been used
 
 function modern_footnotes_func($atts, $content = "") {
-	global $modern_footnotes_count;
+	global $modern_footnotes_used_reference_numbers, $modern_footnotes_options;
 	$additional_classes = '';
-	$settings = get_option('modern_footnotes_settings');
-	if (isset($settings['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $settings['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
+	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
-	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="#">' . $modern_footnotes_count . '</a></sup>' .
+	$additional_attributes = '';
+	if (isset($atts['referencenumber'])) {
+		$display_number = $atts['referencenumber'];
+		$additional_attributes = 'refnum="' . $display_number . '"';
+	} else if (count($modern_footnotes_used_reference_numbers) == 0) {
+		$display_number = 1;
+	} else {
+		$display_number = max($modern_footnotes_used_reference_numbers) + 1;
+	}
+	
+	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '"><a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note">' . $content . '</span>';
-	$modern_footnotes_count++;
+	$modern_footnotes_used_reference_numbers[] = $display_number;
 	return $content;
 }
 
@@ -36,12 +47,20 @@ function modern_footnotes_reset_count() {
 
 add_shortcode('modern_footnote', 'modern_footnotes_func');
 add_shortcode('mfn', 'modern_footnotes_func');
+if (isset($modern_footnotes_options['modern_footnotes_custom_shortcode']) && !empty($modern_footnotes_options['modern_footnotes_custom_shortcode'])) {
+	add_shortcode($modern_footnotes_options['modern_footnotes_custom_shortcode'], 'modern_footnotes_func');
+}
 add_filter('the_post', 'modern_footnotes_reset_count');
 
 
 function modern_footnotes_enqueue_scripts() {
+	global $modern_footnotes_options;
 	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.1.4');
 	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.1.4', TRUE); 
+	
+	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
+		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
+	}
 }
 
 add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts'); 
@@ -89,17 +108,65 @@ function modern_footnotes_register_settings() { // whitelist options
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
+	add_settings_field(
+		'modern_footnotes_custom_css',
+		'Modern Footnotes Custom CSS',
+		'modern_footnotes_custom_css_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section'
+	);
+	add_settings_field(
+		'modern_footnotes_custom_shortcode',
+		'Modern Footnotes Custom Shortcode',
+		'modern_footnotes_custom_shortcode_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section'
+	);
 }
 
 function modern_footnotes_sanitize_callback($plugin_options) {  
+	global $modern_footnotes_options;
+	
+	if (isset($plugin_options['modern_footnotes_custom_css']) && !empty($plugin_options['modern_footnotes_custom_css'])) {
+		//strip style HTML tags from the custom CSS property
+		$plugin_options['modern_footnotes_custom_css'] = preg_replace('/<\/?style.*?>/i', '', $plugin_options['modern_footnotes_custom_css']);
+	}
+	
+	if (isset($plugin_options['modern_footnotes_custom_shortcode']) && !empty($plugin_options['modern_footnotes_custom_shortcode'])) {
+		//remove invalid characters from shortcode
+		$plugin_options['modern_footnotes_custom_shortcode'] = preg_replace('/[^a-zA-Z0-9-_]/i', '', $plugin_options['modern_footnotes_custom_shortcode']);
+		if ((!isset($modern_footnotes_options['modern_footnotes_custom_shortcode']) || $modern_footnotes_options['modern_footnotes_custom_shortcode'] != $plugin_options['modern_footnotes_custom_shortcode']) &&
+			  shortcode_exists($plugin_options['modern_footnotes_custom_shortcode'])) {
+			add_settings_error( 'modern_footnotes_custom_shortcode', 'shortcode-in-use', 'The shortcode "' . $plugin_options['modern_footnotes_custom_shortcode'] . '" is already in use, please enter a different one' );
+			$plugin_options['modern_footnotes_custom_shortcode'] = '';
+		}
+	}
 	return $plugin_options;
 }
 
 function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback() {
-	$options = get_option('modern_footnotes_settings');
+	global $modern_footnotes_options;
 	
-	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
+	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
 	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style</label>';
+
+	echo $html;
+}
+
+function modern_footnotes_custom_css_element_callback() {
+	global $modern_footnotes_options;
+	
+	$html = '<textarea id="modern_footnotes_custom_css" name="modern_footnotes_settings[modern_footnotes_custom_css]" style="max-width:100%;width:400px;height:200px">' . (isset($modern_footnotes_options['modern_footnotes_custom_css']) ? $modern_footnotes_options['modern_footnotes_custom_css'] : '') . '</textarea>';
+	$html .= '<label for="modern_footnotes_custom_css">Enter any custom CSS for the plugin, without any &lt;style&gt; tags.</label>';
+
+	echo $html;
+}
+
+function modern_footnotes_custom_shortcode_element_callback() {
+	global $modern_footnotes_options;
+	
+	$html = '<input type="text" id="modern_footnotes_custom_shortcode" name="modern_footnotes_settings[modern_footnotes_custom_shortcode]" value="' . (isset($modern_footnotes_options['modern_footnotes_custom_shortcode']) ? $modern_footnotes_options['modern_footnotes_custom_shortcode'] : '') . '" />';
+	$html .= '<label for="modern_footnotes_custom_shortcode">Custom shortcode if you\'d like to use something other than [mfn] or [modern_footnote]. Enter the shortcode without the brackets.</label>';
 
 	echo $html;
 }
