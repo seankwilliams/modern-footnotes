@@ -116,7 +116,7 @@ function modern_footnotes_hide_footnotes() {
 			$this.html($this.data('unopenedContent'));
 		}
 	});
-	jQuery(".modern-footnotes-footnote__note").hide();
+	jQuery(".modern-footnotes-footnote__note").hide().css({'left': '', 'top': ''}); //remove left and top property to prevent improper calculations per the bug report at https://wordpress.org/support/topic/footnotes-resizing-on-subsequent-clicks/
 	jQuery(".modern-footnotes-footnote__connector").remove();
 	jQuery(".modern-footnotes-footnote--selected").removeClass("modern-footnotes-footnote--selected");
 }

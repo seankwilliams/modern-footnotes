@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 4.9.2
-Stable tag: 1.2
+Stable tag: 1.2.1
 License: GNU Lesser General Public License v3
 License URI: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
@@ -59,3 +59,4 @@ If you want to customize the styles, you can do so by overriding the following s
 1.1.3 - 1/11/18 - Fixed issue where icon was not showing in the admin MCE editor
 1.1.4 - 1/27/18 - Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
 1.2 - 9/14/18 - Stopped using href="#" for <a> elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
+1.2.1 - 10/3/18 - Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
