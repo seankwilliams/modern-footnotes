@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
-Tested up to: 4.9.2
-Stable tag: 1.2.2
+Tested up to: 5.0
+Stable tag: 1.2.3
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -46,6 +46,9 @@ If you want to customize the styles, you can do so by overriding the following s
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
+=Is there support for Gutenberg?=
+You can always use Modern footnotes with the [mfn] shortcode, but there isn't built-in support for a block or toolbar icon in Gutenberg yet. This is on the list of things to add in the future.
+
 == Screenshots ==
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
 2. http://prismtechstudios.com/modern-footnotes/modern-footnotes-2.png
@@ -61,3 +64,4 @@ If you want to customize the styles, you can do so by overriding the following s
 1.2 - 9/14/18 - Stopped using href="#" for <a> elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
 1.2.1 - 10/3/18 - Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
 1.2.2 - 10/8/18 - Changed license from LGPL to GPL2.
+1.2.3 - 11/1/18 - Tested with WordPress 5.0
