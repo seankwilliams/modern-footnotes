@@ -1,4 +1,4 @@
-/* Copyright 2017 Sean Williams
+/* Copyright 2017-2018 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@ jQuery(function($) {
 	$(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var $footnoteContent = $(this).parent().next('.modern-footnotes-footnote__note');
+		var $footnoteContent = $('.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]');
 		if ($footnoteContent.is(":hidden")) {
 			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
 				//tooltip style
