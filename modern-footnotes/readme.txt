@@ -66,3 +66,4 @@ You can always use Modern footnotes with the [mfn] shortcode, but there isn't bu
 1.2.2 - 10/8/18 - Changed license from LGPL to GPL2.
 1.2.3 - 11/1/18 - Tested with WordPress 5.0
 1.2.4 - 11/30/18 - Fixed a problem where HTML tags could not be entered inside a footnote.
+1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.

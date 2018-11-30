@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.2.4
+Version:     1.2.5
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -33,8 +33,11 @@ function modern_footnotes_func($atts, $content = "") {
 		$display_number = max($modern_footnotes_used_reference_numbers) + 1;
 	}
 	
+  $content = str_replace('<p>','', $content);
+  $content = str_replace('</p>','<br /><br />', $content);
+  
 	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '"><a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a></sup>' .
-				'<div class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</div>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
+				'<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
 	$modern_footnotes_used_reference_numbers[] = $display_number;
 	return $content;
 }
@@ -56,8 +59,8 @@ add_filter('the_post', 'modern_footnotes_reset_count');
 
 function modern_footnotes_enqueue_scripts() {
 	global $modern_footnotes_options;
-	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.2.4');
-	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.2.4', TRUE); 
+	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.2.5');
+	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.2.5', TRUE); 
 	
 	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
 		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
@@ -196,7 +199,7 @@ if ($modern_footnotes_wp_version_parts[0] <= 4) { //WP Major version 4 and earli
 		add_action('init', 'modern_footnotes_add_container_button');
 		
 		function modern_footnotes_enqueue_admin_scripts() {
-			wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.2.4');
+			wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.2.5');
 		}
 
 		add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
