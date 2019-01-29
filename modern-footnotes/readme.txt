@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 5.0
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -68,3 +68,4 @@ You can always use Modern footnotes with the [mfn] shortcode, but there isn't bu
 1.2.4 - 11/30/18 - Fixed a problem where HTML tags could not be entered inside a footnote.
 1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
 1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
+1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
