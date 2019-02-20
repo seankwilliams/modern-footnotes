@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
-Tested up to: 5.0
-Stable tag: 1.2.7
+Tested up to: 5.1
+Stable tag: 1.3.0
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -46,8 +46,8 @@ If you want to customize the styles, you can do so by overriding the following s
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
-=Is there support for Gutenberg?=
-You can always use Modern footnotes with the [mfn] shortcode, but there isn't built-in support for a block or toolbar icon in Gutenberg yet. This is on the list of things to add in the future.
+=Is there support for the Block Editor/Gutenberg Editor?=
+Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor to move the selected text into a footnote. However, if you want to customize the reference numbers output by the plugin, you'll have to type out the shortcode instead.
 
 == Screenshots ==
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
@@ -69,3 +69,4 @@ You can always use Modern footnotes with the [mfn] shortcode, but there isn't bu
 1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
 1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
 1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
+1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
