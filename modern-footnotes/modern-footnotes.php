@@ -58,6 +58,16 @@ foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
 
 add_filter('the_post', 'modern_footnotes_reset_count');
 
+// replace <mfn> HTML tags added by Gutenberg/block editor to [mfn] shortcodes
+
+function modern_footnotes_replace_mfn_tag_with_shortcode( $content ) {
+  $content = str_replace('<mfn>','[mfn]',$content);
+  $content = str_replace('</mfn>','[/mfn]',$content);
+  return $content;
+}
+add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
+ 
+
 
 function modern_footnotes_enqueue_scripts() {
 	global $modern_footnotes_options;
@@ -233,4 +243,20 @@ function modern_footnotes_add_container_plugin($plugin_array) {
 }
 //
 // End Pre-Gutenberg editor
+//
+
+// 
+// Gutenberg / Block Editor 
+//
+function modern_footnotes_block_editor_button() {
+    wp_enqueue_script( 'modern_footnotes',
+        plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
+        array( 'wp-rich-text', 'wp-element', 'wp-editor' ),
+        '1.2.7'    
+    );
+    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.2.7');
+}
+add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
+//
+// End Gutenberg / Block Editor
 //
