@@ -203,36 +203,33 @@ if (is_admin()) { // admin actions
 //
 // Pre-Gutenberg editor
 //
-$modern_footnotes_wp_version_parts = explode(".", $wp_version);
-if ($modern_footnotes_wp_version_parts[0] <= 4) { //WP Major version 4 and earlier does not have Gutenberg
-	function modern_footnotes_add_container_button() {
-		if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
-			return;
-		if ( get_user_option('rich_editing') == 'true') {
-			add_filter('mce_external_plugins', 'modern_footnotes_add_container_plugin');
-			add_filter('mce_buttons', 'modern_footnotes_register_container_button');
-		}
-	}
-	if (is_admin()) { 
-		add_action('init', 'modern_footnotes_add_container_button');
-		
-		function modern_footnotes_enqueue_admin_scripts() {
-			wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.2.7');
-		}
+function modern_footnotes_add_container_button() {
+  if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+    return;
+  if ( get_user_option('rich_editing') == 'true') {
+    add_filter('mce_external_plugins', 'modern_footnotes_add_container_plugin');
+    add_filter('mce_buttons', 'modern_footnotes_register_container_button');
+  }
+}
+if (is_admin()) { 
+  add_filter('init', 'modern_footnotes_add_container_button');
+  
+  function modern_footnotes_enqueue_admin_scripts() {
+    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.2.7');
+  }
 
-		add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
-	}
+  add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
+}
 
 
-	function modern_footnotes_register_container_button($buttons) {
-		array_push($buttons, "modern_footnotes");
-		return $buttons;
-	}
+function modern_footnotes_register_container_button($buttons) {
+  array_push($buttons, "modern_footnotes");
+  return $buttons;
+}
 
-	function modern_footnotes_add_container_plugin($plugin_array) {
-		$plugin_array['modern_footnotes'] = plugin_dir_url(__FILE__) . 'modern-footnotes.mce-button.min.js';
-		return $plugin_array;
-	}
+function modern_footnotes_add_container_plugin($plugin_array) {
+  $plugin_array['modern_footnotes'] = plugin_dir_url(__FILE__) . 'modern-footnotes.mce-button.min.js';
+  return $plugin_array;
 }
 //
 // End Pre-Gutenberg editor
