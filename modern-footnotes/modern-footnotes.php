@@ -32,6 +32,8 @@ function modern_footnotes_func($atts, $content = "") {
 	} else {
 		$display_number = max($modern_footnotes_used_reference_numbers) + 1;
 	}
+  
+  $content = do_shortcode($content); // render out any shortcodes within the contents
 	
   $content = str_replace('<p>','', $content);
   $content = str_replace('</p>','<br /><br />', $content);

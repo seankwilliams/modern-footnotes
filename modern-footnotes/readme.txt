@@ -69,4 +69,4 @@ Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor 
 1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
 1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
 1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
-1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button.
+1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
