@@ -251,12 +251,12 @@ function modern_footnotes_add_container_plugin($plugin_array) {
 // Gutenberg / Block Editor 
 //
 function modern_footnotes_block_editor_button() {
-    wp_enqueue_script( 'modern_footnotes',
+    wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
         array( 'wp-rich-text', 'wp-element', 'wp-editor' ),
         '1.3.0'    
     );
-    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.3.0');
+    wp_enqueue_style('modern_footnotes_block_editor_css', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.3.0');
 }
 add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
 //
