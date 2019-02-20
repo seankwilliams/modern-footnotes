@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.2.7
+Version:     1.3.0
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -71,8 +71,8 @@ add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
 
 function modern_footnotes_enqueue_scripts() {
 	global $modern_footnotes_options;
-	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.2.7');
-	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.2.7', TRUE); 
+	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.3.0');
+	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.3.0', TRUE); 
 	
 	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
 		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
@@ -225,7 +225,7 @@ if (is_admin()) {
   add_filter('init', 'modern_footnotes_add_container_button');
   
   function modern_footnotes_enqueue_admin_scripts() {
-    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.2.7');
+    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.3.0');
   }
 
   add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
@@ -252,9 +252,9 @@ function modern_footnotes_block_editor_button() {
     wp_enqueue_script( 'modern_footnotes',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
         array( 'wp-rich-text', 'wp-element', 'wp-editor' ),
-        '1.2.7'    
+        '1.3.0'    
     );
-    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.2.7');
+    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.3.0');
 }
 add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
 //
