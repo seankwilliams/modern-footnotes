@@ -37,6 +37,13 @@
 	font-size: 80%;
 	color: #777;
 }
+.modern-footnotes-footnote__note a {
+	display: inline-block;
+	max-width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 /* default tooltip style for desktop */
 .modern-footnotes-footnote__note--tooltip {
 	position: absolute;
