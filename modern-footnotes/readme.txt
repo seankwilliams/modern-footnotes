@@ -16,6 +16,8 @@ Use a footnote in your post by using the footnote icon in the WordPress editor o
 
 On desktop, footnotes will appear as a tooltip when the user clicks on the number. On mobile, footnotes will expand as a section below the current text.
 
+See the GitHub repository at: https://github.com/seankwilliams/modern-footnotes
+
 == Installation ==
 1. Upload the modern-footnotes folder to your wp-content/plugins directory.
 2. Activate the plugin in the WordPress Plugins section.
@@ -55,18 +57,18 @@ Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor 
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
-1.0 - 4/1/17 - initial version.
-1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
-1.1.1 - 11/22/17 - Fixed error occuring in PHP versions below 5.3
-1.1.2 - 1/6/18 - Fixed problem where scripts were enqueued incorrectly.
-1.1.3 - 1/11/18 - Fixed issue where icon was not showing in the admin MCE editor
-1.1.4 - 1/27/18 - Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
-1.2 - 9/14/18 - Stopped using href="#" for <a> elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
-1.2.1 - 10/3/18 - Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
-1.2.2 - 10/8/18 - Changed license from LGPL to GPL2.
-1.2.3 - 11/1/18 - Tested with WordPress 5.0
-1.2.4 - 11/30/18 - Fixed a problem where HTML tags could not be entered inside a footnote.
-1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
-1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
-1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
 1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
+1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
+1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
+1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
+1.2.4 - 11/30/18 - Fixed a problem where HTML tags could not be entered inside a footnote.
+1.2.3 - 11/1/18 - Tested with WordPress 5.0
+1.2.2 - 10/8/18 - Changed license from LGPL to GPL2.
+1.2.1 - 10/3/18 - Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
+1.2 - 9/14/18 - Stopped using href="#" for `a` HTML elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
+1.1.4 - 1/27/18 - Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
+1.1.3 - 1/11/18 - Fixed issue where icon was not showing in the admin MCE editor
+1.1.2 - 1/6/18 - Fixed problem where scripts were enqueued incorrectly.
+1.1.1 - 11/22/17 - Fixed error occuring in PHP versions below 5.3
+1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
+1.0 - 4/1/17 - initial version.
