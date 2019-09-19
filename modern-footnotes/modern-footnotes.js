@@ -1,24 +1,25 @@
-/* Copyright 2017 Sean Williams
+/* Copyright 2017-2019 Sean Williams
     This file is part of Modern Footnotes.
 
-    Modern Footnotes is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
-    Modern Footnotes is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+    GNU General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with Modern Footnotes.  If not, see https://www.gnu.org/licenses/lgpl-3.0.en.html.
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 jQuery(function($) {
 	$(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var $footnoteContent = $(this).parent().next('.modern-footnotes-footnote__note');
+		var $footnoteContent = $('.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]');
 		if ($footnoteContent.is(":hidden")) {
 			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
 				//tooltip style
@@ -77,6 +78,35 @@ jQuery(function($) {
 	$(window).resize(function() {
 		modern_footnotes_hide_footnotes();
 	});
+	
+	//some plugins, like TablePress, cause shortcodes to be rendered
+	//in a different order than they appear in the HTML. This can cause
+	//the numbering to be out of order. I couldn't find a way to deal
+	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
+	//will correct the numbering if it's not sequential.
+	var $footnotesAnchorLinks = $(".modern-footnotes-footnote a");
+	var usedReferenceNumbers = [0];
+	if ($footnotesAnchorLinks.length > 1) {
+		$footnotesAnchorLinks.each(function() {
+			if ($(this).is("a[refnum]")) {
+				var manualRefNum = $(this).attr("refnum");
+				if ($(this).html() != manualRefNum) {
+					$(this).html(manualRefNum);
+				}
+				if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
+					usedReferenceNumbers.push(manualRefNum);
+				}
+			}
+			else {
+				var refNum = Math.max.apply(null, usedReferenceNumbers) + 1;
+				if ($(this).html() != refNum) {
+					$(this).html(refNum);
+				}
+				usedReferenceNumbers.push(refNum);
+			}
+		});
+	}
+	
 });
 
 
@@ -87,7 +117,7 @@ function modern_footnotes_hide_footnotes() {
 			$this.html($this.data('unopenedContent'));
 		}
 	});
-	jQuery(".modern-footnotes-footnote__note").hide();
+	jQuery(".modern-footnotes-footnote__note").hide().css({'left': '', 'top': ''}); //remove left and top property to prevent improper calculations per the bug report at https://wordpress.org/support/topic/footnotes-resizing-on-subsequent-clicks/
 	jQuery(".modern-footnotes-footnote__connector").remove();
 	jQuery(".modern-footnotes-footnote--selected").removeClass("modern-footnotes-footnote--selected");
 }

@@ -1,18 +1,19 @@
-/* Copyright 2017 Sean Williams
+/* Copyright 2017-2019 Sean Williams
     This file is part of Modern Footnotes.
 
-    Modern Footnotes is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
-    Modern Footnotes is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+    GNU General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with Modern Footnotes.  If not, see https://www.gnu.org/licenses/lgpl-3.0.en.html.
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 (function() {
 tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
@@ -27,7 +28,7 @@ tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
 			if (content.length > 0) {
 				if (content.indexOf('[modern_footnote]') == -1 && content.indexOf('[/modern_footnote]') == -1 &&
 					content.indexOf('[mfn]') == -1 && content.indexOf('[/mfn]') == -1) {
-					editor.selection.setContent('[modern_footnote]' + content + '[/modern_footnote]');
+					editor.selection.setContent('[mfn]' + content + '[/mfn]');
 				} else if (content.indexOf('[modern_footnote]') != -1 && content.indexOf('[/modern_footnote]') != -1) {
 					editor.selection.setContent(content.replace(/\[modern\_footnote\]/, '').replace(/\[\/modern\_footnote\]/, ''));
 				} else if (content.indexOf('[mfn]') != -1 && content.indexOf('[/mfn]') != -1) {
@@ -44,7 +45,7 @@ tinymce.PluginManager.add('modern_footnotes', function( editor, url ) {
 						label: 'Footnote'
 					}],
 					onsubmit: function( e ) {
-						editor.insertContent( '[modern_footnote]' + e.data.footnote + '[/modern_footnote]');
+						editor.insertContent( '[mfn]' + e.data.footnote + '[/mfn]');
 					}
 				});
 			}
