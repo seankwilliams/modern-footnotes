@@ -71,7 +71,7 @@ add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
  
 
 
-function modern_footnotes_enqueue_scripts() {
+function modern_footnotes_enqueue_scripts_styles() {
 	global $modern_footnotes_options;
 	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.3.0');
 	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.3.0', TRUE); 
@@ -81,7 +81,7 @@ function modern_footnotes_enqueue_scripts() {
 	}
 }
 
-add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts'); 
+add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts_styles'); 
 
 //
 //modify the admin
