@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
-Tested up to: 5.2.3
-Stable tag: 1.3.2
+Tested up to: 5.2.4
+Stable tag: 1.3.3
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -51,12 +51,16 @@ If you want to customize the styles, you can do so by overriding the following s
 =Is there support for the Block Editor/Gutenberg Editor?=
 Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor to move the selected text into a footnote. However, if you want to customize the reference numbers output by the plugin, you'll have to type out the shortcode instead.
 
+=Why isn't the word "footnote" appearing by all of my footnotes in the Block Editor/Gutenberg Editor?=
+The word "footnote" only shows up by the first footnote in each paragraph in the editor, but all footnotes are highlighted gray. This is to work around a technical limitation of Gutenberg's editor, though hopefully we can come up with a better solution in the future. Don't worry, your footnotes will show up correctly when viewing the page/blog post though!
+
 == Screenshots ==
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
 2. http://prismtechstudios.com/modern-footnotes/modern-footnotes-2.png
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
+1.3.3 - 10/16/19 - Fix issue where applying multiple formats in conjunction with footnotes in the Gutenberg editor would mess up footnote formatting
 1.3.2 - 9/18/19 - Fix issue where links inside footnotes wouldn't appear inline with other text
 1.3.1 - 9/18/19 - Updated style so that long links are truncated with ellipsis in tooltips
 1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
