@@ -61,11 +61,44 @@ foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
 add_filter('the_post', 'modern_footnotes_reset_count');
 
 // replace <mfn> HTML tags added by Gutenberg/block editor to [mfn] shortcodes
-
+// When multiple formats are applied, Gutenberg can have multiple <mfn> tags for one footnote, so we'll have to iterate through the text and group sibling tags together (see https://github.com/seankwilliams/modern-footnotes/issues/14)
 function modern_footnotes_replace_mfn_tag_with_shortcode( $content ) {
-  $content = str_replace('<mfn>','[mfn]',$content);
-  $content = str_replace('</mfn>','[/mfn]',$content);
-  return $content;
+  $content = str_replace('</mfn>','<mfn>',$content); //using [mfn] instead of [/mfn] is intentional here
+  $contentParts = explode('<mfn>', $content);
+  $contentData = array();
+  //$tagsFromPreviousSegment = array();
+  $inFootnote = FALSE;
+  foreach ($contentParts as $c) {
+    $contentData[] = array(
+      "content" => $c,
+      "inFootnote" => $inFootnote
+    );    
+    $inFootnote = !$inFootnote;
+  }
+  for ($i = 0; $i < count($contentData); $i++) {
+    //if this is only opening tags or only closing tags, place it in the footnote
+    $replacedString = preg_replace("/<\/?\\w+\\s?\\w?.*?>/ms", "", $contentData[$i]['content']);
+    if (strlen($replacedString) === 0 && !$contentData[$i]['inFootnote']) {
+      $contentData[$i]['inFootnote'] = TRUE;
+    }
+  }
+  $finalContent = '';
+  $inFootnote = FALSE;
+  foreach ($contentData as $cd) {
+    if ($cd['inFootnote'] && !$inFootnote) {
+      $inFootnote = TRUE;
+      $finalContent .= '[mfn]';
+    } else if ($inFootnote && !$cd['inFootnote']) {
+      $inFootnote = FALSE;
+      $finalContent .= '[/mfn]';
+    }
+    
+    $finalContent .= $cd['content'];
+  }
+  if ($inFootnote) {
+    $finalContent .= '[/mfn]';
+  }
+  return $finalContent;
 }
 add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
  

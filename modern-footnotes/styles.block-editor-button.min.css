@@ -1,3 +1,3 @@
 .modern-footnotes-admin-button {background: url(mce-button.png) 4px 5px no-repeat !important; display:block;width:30px;height:30px;padding: 5px;}
-mfn::before { content: "footnote";color: #888;font-size: 12px;position: relative;top: -5px;margin-right: 3px;margin-left: 3px; }
+.block-editor-rich-text__editable > mfn:first-child::before { content: "footnote";color: #888;font-size: 12px;position: relative;top: -5px;margin-right: 3px;margin-left: 3px; }
 mfn { background: #ccc; } 
