@@ -51,6 +51,9 @@ If you want to customize the styles, you can do so by overriding the following s
 =Is there support for the Block Editor/Gutenberg Editor?=
 Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor to move the selected text into a footnote. However, if you want to customize the reference numbers output by the plugin, you'll have to type out the shortcode instead.
 
+=Why isn't the word "footnote" appearing by all of my footnotes in the Block Editor/Gutenberg Editor?=
+The word "footnote" only shows up by the first footnote in each paragraph in the editor, but all footnotes are highlighted gray. This is to work around a technical limitation of Gutenberg's editor, though hopefully we can come up with a better solution in the future. Don't worry, your footnotes will show up correctly when viewing the page/blog post though!
+
 == Screenshots ==
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
 2. http://prismtechstudios.com/modern-footnotes/modern-footnotes-2.png
