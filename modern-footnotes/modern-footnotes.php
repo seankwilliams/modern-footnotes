@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.3.2
+Version:     1.3.3
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -12,6 +12,8 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+$modern_footnotes_version = '1.3.3';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -105,9 +107,9 @@ add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
 
 
 function modern_footnotes_enqueue_scripts_styles() {
-	global $modern_footnotes_options;
-	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), '1.3.2');
-	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), '1.3.2', TRUE); 
+	global $modern_footnotes_options, $modern_footnotes_version;
+	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), $modern_footnotes_version);
+	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), $modern_footnotes_version, TRUE); 
 	
 	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
 		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
@@ -260,7 +262,8 @@ if (is_admin()) {
   add_filter('init', 'modern_footnotes_add_container_button');
   
   function modern_footnotes_enqueue_admin_scripts() {
-    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), '1.3.2');
+    global $modern_footnotes_version;
+    wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.mce-button.min.css', array(), $modern_footnotes_version);
   }
 
   add_action('admin_enqueue_scripts', 'modern_footnotes_enqueue_admin_scripts'); 
@@ -284,12 +287,13 @@ function modern_footnotes_add_container_plugin($plugin_array) {
 // Gutenberg / Block Editor 
 //
 function modern_footnotes_block_editor_button() {
+    global $modern_footnotes_version;
     wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
         array( 'wp-rich-text', 'wp-element', 'wp-editor' ),
-        '1.3.2'    
+        $modern_footnotes_version
     );
-    wp_enqueue_style('modern_footnotes_block_editor_css', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), '1.3.2');
+    wp_enqueue_style('modern_footnotes_block_editor_css', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), $modern_footnotes_version);
 }
 add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
 //
