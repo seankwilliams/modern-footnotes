@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.3.3
+Version:     1.3.4
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -13,7 +13,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.3.3';
+$modern_footnotes_version = '1.3.4';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -77,11 +77,14 @@ function modern_footnotes_replace_mfn_tag_with_shortcode( $content ) {
     );    
     $inFootnote = !$inFootnote;
   }
+  $wasInFootnote = FALSE;
   for ($i = 0; $i < count($contentData); $i++) {
     //if this is only opening tags or only closing tags, place it in the footnote
     $replacedString = preg_replace("/<\/?\\w+\\s?\\w?.*?>/ms", "", $contentData[$i]['content']);
-    if (strlen($replacedString) === 0 && !$contentData[$i]['inFootnote']) {
+    if (strlen($replacedString) === 0 && !$contentData[$i]['inFootnote'] && $wasInFootnote) { // check $wasInFootnote to fix https://github.com/seankwilliams/modern-footnotes/issues/18
       $contentData[$i]['inFootnote'] = TRUE;
+    } else {
+      $wasInFootnote = $contentData[$i]['inFootnote'];
     }
   }
   $finalContent = '';
