@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 5.2.4
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -60,6 +60,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
+1.3.4 - 10/23/19 - Fix for problem where some extra, empty footnotes would randomly appear
 1.3.3 - 10/16/19 - Fix issue where applying multiple formats in conjunction with footnotes in the Gutenberg editor would mess up footnote formatting
 1.3.2 - 9/18/19 - Fix issue where links inside footnotes wouldn't appear inline with other text
 1.3.1 - 9/18/19 - Updated style so that long links are truncated with ellipsis in tooltips
