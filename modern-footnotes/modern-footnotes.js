@@ -84,7 +84,7 @@ jQuery(function($) {
 	//the numbering to be out of order. I couldn't find a way to deal
 	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
 	//will correct the numbering if it's not sequential.
-	var $footnotesAnchorLinks = $(".modern-footnotes-footnote a");
+	var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
 	var usedReferenceNumbers = [0];
 	if ($footnotesAnchorLinks.length > 1) {
 		$footnotesAnchorLinks.each(function() {
