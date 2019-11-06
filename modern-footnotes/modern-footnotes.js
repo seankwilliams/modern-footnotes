@@ -19,7 +19,8 @@ jQuery(function($) {
 	$(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var $footnoteContent = $('.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]');
+		next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
+		var $footnoteContent = $(this).parent().next(next);
 		if ($footnoteContent.is(":hidden")) {
 			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
 				//tooltip style
@@ -58,7 +59,7 @@ jQuery(function($) {
 				$footnoteContent
 					.removeClass('modern-footnotes-footnote__note--tooltip')
 					.addClass('modern-footnotes-footnote__note--expandable')
-					.css('display', 'block');	
+					.css('display', 'block');
 				$(this).data('unopenedContent', $(this).html());
 				$(this).html('x');
 			}
@@ -73,12 +74,12 @@ jQuery(function($) {
 	}).on('click', function() {
 		modern_footnotes_hide_footnotes();
 	});
-	
+
 	//hide all footnotes on window resize or clicking anywhere but on the footnote link
 	$(window).resize(function() {
 		modern_footnotes_hide_footnotes();
 	});
-	
+
 	//some plugins, like TablePress, cause shortcodes to be rendered
 	//in a different order than they appear in the HTML. This can cause
 	//the numbering to be out of order. I couldn't find a way to deal
@@ -106,7 +107,7 @@ jQuery(function($) {
 			}
 		});
 	}
-	
+
 });
 
 
