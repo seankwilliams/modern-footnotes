@@ -20,7 +20,7 @@ jQuery(function($) {
 		e.preventDefault();
 		e.stopPropagation();
 		next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
-		var $footnoteContent = $(this).parent().next(next);
+		var $footnoteContent = $(this).parent().nextAll(next).eq(0);
 		if ($footnoteContent.is(":hidden")) {
 			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
 				//tooltip style
