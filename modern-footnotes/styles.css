@@ -48,6 +48,7 @@
 /* default tooltip style for desktop */
 .modern-footnotes-footnote__note--tooltip {
 	position: absolute;
+  left: 0;
 	border: 1px solid #666;
 	background: #fff;
 	padding: 0.7em 1em;
