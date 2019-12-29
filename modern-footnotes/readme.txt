@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
 Tested up to: 5.3
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -60,6 +60,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
+1.3.9 - 12/29/19 - Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop
 1.3.8 - 11/12/19 - Fixed problems with some custom implementations where footnotes wouldn't open due to extra DOM elements being placed between the footnote link & content
 1.3.7 - 11/7/19 - Fixed JavaScript error
 1.3.6 - 11/6/19 - Fix for problem where clicking on a footnote with the same numbering as another footnote would open both footnotes
