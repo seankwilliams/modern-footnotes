@@ -19,7 +19,7 @@
     var ModernFootnotesButton = function( props ) {
         return wp.element.createElement(
             wp.editor.RichTextToolbarButton, {
-                icon: wp.element.createElement('span', { 'class': 'modern-footnotes-admin-button' }),
+                icon: wp.element.createElement('span', { 'className': 'modern-footnotes-admin-button' }),
                 title: 'Add a Footnote',
                 onClick: function() {
                     props.onChange( wp.richText.toggleFormat(
