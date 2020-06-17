@@ -3,7 +3,7 @@
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.3.9
+Version:     1.3.10
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -13,7 +13,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.3.9';
+$modern_footnotes_version = '1.3.10';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -25,6 +25,11 @@ function modern_footnotes_func($atts, $content = "") {
 	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
+  
+  if (isset($atts['referencereset']) && $atts['referencereset'] == 'true') {
+    $modern_footnotes_used_reference_numbers = array();
+  }
+  
 	$additional_attributes = '';
 	if (isset($atts['referencenumber'])) {
 		$display_number = $atts['referencenumber'];
@@ -39,6 +44,11 @@ function modern_footnotes_func($atts, $content = "") {
 	
   $content = str_replace('<p>','', $content);
   $content = str_replace('</p>','<br /><br />', $content);
+  
+  //ensure that reference numbers restart when multiple posts are listed on a page, or when the referencereset attribute is present
+  if (count($modern_footnotes_used_reference_numbers) == 0) {
+    $additional_attributes .= ' data-mfn-reset';
+  }
   
 	$content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '"><a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
