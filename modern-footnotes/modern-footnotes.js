@@ -89,6 +89,9 @@ jQuery(function($) {
 	var usedReferenceNumbers = [0];
 	if ($footnotesAnchorLinks.length > 1) {
 		$footnotesAnchorLinks.each(function() {
+      if ($(this).is("a[data-mfn-reset]")) {
+        usedReferenceNumbers = [0];
+      }
 			if ($(this).is("a[refnum]")) {
 				var manualRefNum = $(this).attr("refnum");
 				if ($(this).html() != manualRefNum) {

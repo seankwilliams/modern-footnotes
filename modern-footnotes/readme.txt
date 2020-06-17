@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.4.8
-Tested up to: 5.3
-Stable tag: 1.3.9
+Tested up to: 5.4.2
+Stable tag: 1.3.10
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -40,6 +40,9 @@ Yes. Go to Settings -> Modern Footnotes and choose the "Expandable footnotes on 
 =Can I customize the reference numbers output by the plugin?=
 Yes. You can specify custom reference numbers by using the "referencenumber" attribute to specify a particular reference number. For example: [mfn referencenumber=3]This will have the number 3 with it.[/mfn] 
 
+=Can I make the footnote numbers "reset" at 1?=
+Yes. Designate the footnote where you want numbers to reset with the referencereset='true' attribute and the reference counter will restart at 1. For example: [mfn referencereset='true']This will have the number 1 with it, regardless of how many footnotes came before it. The next footnote after this will be the number 2.[/mfn] Please note that this may not be compatible with all other plugins depending on how the plugin manipulates the HTML, so if the numbers aren't appearing right, you may have to use the "refnum" attribute instead (see "Can I customize the reference numbers output by the plugin?")
+
 =Can I customize the styles of footnotes?=
 If you want to customize the styles, you can do so by overriding the following styles in custom CSS for your theme:
 .modern-footnotes-footnote - The superscript element displaying the footnote number
@@ -60,6 +63,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
+1.3.10 - 6/17/20 - Fixed problem on pages that listed multiple posts where footnote numbers wouldn't reset. Added an option to reset footnote numbering with an attribute. Fixed a minor code issue with the Gutenberg editor.
 1.3.9 - 12/29/19 - Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop
 1.3.8 - 11/12/19 - Fixed problems with some custom implementations where footnotes wouldn't open due to extra DOM elements being placed between the footnote link & content
 1.3.7 - 11/7/19 - Fixed JavaScript error
