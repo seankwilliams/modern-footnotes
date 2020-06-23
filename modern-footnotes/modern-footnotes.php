@@ -2,8 +2,9 @@
 /*
 Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
+Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.3.10
+Version:     1.3.11
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -13,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.3.10';
+$modern_footnotes_version = '1.3.11';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -137,7 +138,9 @@ add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts_styles');
 
 //create a settings page
 function modern_footnotes_menu() {
-	add_options_page( 'Modern Footnotes Options', 'Modern Footnotes', 'manage_options', __FILE__, 'modern_footnotes_options' );
+	add_options_page( __('Modern Footnotes Settings', 'modern-footnotes'), 
+                    __('Modern Footnotes','modern-footnotes'), 
+                    'manage_options', __FILE__, 'modern_footnotes_options' );
 }
 
 function modern_footnotes_options() {
@@ -145,7 +148,7 @@ function modern_footnotes_options() {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 	echo '<div class="wrap">';
-	echo '<h1>Modern Footnotes Options</h1>';
+	echo '<h1>' . esc_html__('Modern Footnotes Settings','modern-footnotes') . '</h1>';
 	echo '<form method="post" action="options.php">';
 	settings_fields('modern_footnotes_settings');
 	do_settings_sections(__FILE__);
@@ -163,27 +166,27 @@ function modern_footnotes_register_settings() { // whitelist options
 				));
 	add_settings_section(
 		'modern_footnotes_option_group_section',
-		'Modern Footnotes Settings',
+		__('Modern Footnotes Settings', 'modern-footnotes'),
 		function() { /* do nothing, no HTML needed for section heading */ },
 		__FILE__
 	);
 	add_settings_field(
 		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips',
-		'Expandable footnotes on desktop',
+		__('Expandable footnotes on desktop', 'modern-footnotes'),
 		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback',
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
 	add_settings_field(
 		'modern_footnotes_custom_css',
-		'Modern Footnotes Custom CSS',
+		__('Modern Footnotes Custom CSS', 'modern-footnotes'),
 		'modern_footnotes_custom_css_element_callback',
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
 	add_settings_field(
 		'modern_footnotes_custom_shortcode',
-		'Modern Footnotes Custom Shortcode',
+		__('Modern Footnotes Custom Shortcode', 'modern-footnotes'),
 		'modern_footnotes_custom_shortcode_element_callback',
 		__FILE__,
 		'modern_footnotes_option_group_section'
@@ -214,7 +217,9 @@ function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltip
 	global $modern_footnotes_options;
 	
 	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
-	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">Use expandable footnotes on desktop insetad of the default tooltip style</label>';
+	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">' .
+            esc_html__('Use expandable footnotes on desktop insetad of the default tooltip style', 'modern-footnotes') .
+            '</label>';
 
 	echo $html;
 }
@@ -223,7 +228,9 @@ function modern_footnotes_custom_css_element_callback() {
 	global $modern_footnotes_options;
 	
 	$html = '<textarea id="modern_footnotes_custom_css" name="modern_footnotes_settings[modern_footnotes_custom_css]" style="max-width:100%;width:400px;height:200px">' . (isset($modern_footnotes_options['modern_footnotes_custom_css']) ? $modern_footnotes_options['modern_footnotes_custom_css'] : '') . '</textarea>';
-	$html .= '<label for="modern_footnotes_custom_css">Enter any custom CSS for the plugin, without any &lt;style&gt; tags.</label>';
+	$html .= '<label for="modern_footnotes_custom_css">' .
+            esc_html__('Enter any custom CSS for the plugin, without any <style> tags.', 'modern-footnotes') .
+            '</label>';
 
 	echo $html;
 }
@@ -232,7 +239,9 @@ function modern_footnotes_custom_shortcode_element_callback() {
 	global $modern_footnotes_options;
 	
 	$html = '<input type="text" id="modern_footnotes_custom_shortcode" name="modern_footnotes_settings[modern_footnotes_custom_shortcode]" value="' . (isset($modern_footnotes_options['modern_footnotes_custom_shortcode']) ? $modern_footnotes_options['modern_footnotes_custom_shortcode'] : '') . '" />';
-	$html .= '<label for="modern_footnotes_custom_shortcode">Custom shortcode if you\'d like to use something other than [mfn] or [modern_footnote]. Enter the shortcode without the brackets.</label>';
+	$html .= '<label for="modern_footnotes_custom_shortcode">' .
+            esc_html__('Custom shortcode if you\'d like to use something other than [mfn] or [modern_footnote]. Enter the shortcode without the brackets.', 'modern-footnotes') .
+            '</label>';
 
 	echo $html;
 }
@@ -303,10 +312,12 @@ function modern_footnotes_block_editor_button() {
     global $modern_footnotes_version;
     wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
-        array( 'wp-rich-text', 'wp-element', 'wp-editor' ),
+        array( 'wp-rich-text', 'wp-element', 'wp-editor', 'wp-i18n' ),
         $modern_footnotes_version
     );
+    wp_set_script_translations('modern_footnotes_block_editor_js','modern-footnotes');
     wp_enqueue_style('modern_footnotes_block_editor_css', plugin_dir_url(__FILE__) . 'styles.block-editor-button.min.css', array(), $modern_footnotes_version);
+    
 }
 add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
 //

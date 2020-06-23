@@ -1,4 +1,4 @@
-/* Copyright 2017-2019 Sean Williams
+/* Copyright 2017-2020 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -15,12 +15,13 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+const { __ } = wp.i18n;
 ( function( wp ) {
     var ModernFootnotesButton = function( props ) {
         return wp.element.createElement(
             wp.editor.RichTextToolbarButton, {
                 icon: wp.element.createElement('span', { 'className': 'modern-footnotes-admin-button' }),
-                title: 'Add a Footnote',
+                title: __('Add a Footnote', 'modern-footnotes'),
                 onClick: function() {
                     props.onChange( wp.richText.toggleFormat(
                         props.value,
