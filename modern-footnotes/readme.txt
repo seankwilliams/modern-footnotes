@@ -2,8 +2,8 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
-Tested up to: 5.4.2
-Stable tag: 1.3.11
+Tested up to: 5.6
+Stable tag: 1.4
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -15,6 +15,8 @@ Footnotes optimized for desktop and mobile, inspired by the styles of Grantland 
 Use a footnote in your post by using the footnote icon in the WordPress editor or by using the shortcode: [mfn]this will be a footnote[/mfn] The plugin will automatically associate sequential numbers with each plugin.
 
 On desktop, footnotes will appear as a tooltip when the user clicks on the number. On mobile, footnotes will expand as a section below the current text.
+
+You can also use the [mfn-list] shortcode to display a list of footnotes used in the article.
 
 See the GitHub repository at: https://github.com/seankwilliams/modern-footnotes
 
@@ -33,6 +35,9 @@ See the GitHub repository at: https://github.com/seankwilliams/modern-footnotes
 == Frequently Asked Questions ==
 =How do I create a footnote?=
 Use a footnote in your post by using the footnote icon in the WordPress editor or by using the shortcode: [mfn]this will be a footnote[/mfn]
+
+=Can the footnotes also be listed at the bottom of the post?=
+Yes. Go to Settings -> Modern Footnotes and choose the "Display footnote list at bottom of posts" option. Or, if you only want the footnotes at the bottom of the post when printing, choose the "When printing, list footnotes at the bottom of posts" option.
 
 =Can I make desktop footnotes expand like they do on mobile instead of using tooltips?=
 Yes. Go to Settings -> Modern Footnotes and choose the "Expandable footnotes on desktop" option.
@@ -63,6 +68,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
+1.4 - 12/31/20 - Added option to list footnotes at bottom of the page
 1.3.11 - 6/23/20 - Prepared plugin for localization
 1.3.10 - 6/17/20 - Fixed problem on pages that listed multiple posts where footnote numbers wouldn't reset. Added an option to reset footnote numbering with an attribute. Fixed a minor code issue with the Gutenberg editor.
 1.3.9 - 12/29/19 - Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop

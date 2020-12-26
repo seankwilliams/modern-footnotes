@@ -1,4 +1,4 @@
-/* Copyright 2017-2020 Sean Williams
+/* Copyright 2017-2021 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify

@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.3.11
+Version:     1.4
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,12 +14,30 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.3.11';
+$modern_footnotes_version = '1.4';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
 $modern_footnotes_used_reference_numbers = array(); //keeps track of what reference numbers have been used
 $modern_footnotes_footnotes_in_post = array(); // contains the footnotes in the post, for displaying in a section underneath the post
+
+function modern_footnotes_list_func($atts=[], $content = "") {
+  global $modern_footnotes_footnotes_in_post;
+  $content = '<ul class="modern-footnotes-list ' . 
+    (isset($atts['show_only_when_printing']) && $atts['show_only_when_printing'] ? 'modern-footnotes-list--show-only-for-print' : '') .
+    (isset($atts['hide_when_printing']) && $atts['hide_when_printing'] ? 'modern-footnotes-list--hide-for-print' : '') 
+    . '">';
+  foreach($modern_footnotes_footnotes_in_post as $display_number => $footnote_content) {
+    $content .= '<li>';
+    $content .= '<span>' . $display_number . '</span>';
+    $content .= '<div>';
+    $content .= $footnote_content;
+    $content .= '</div>';
+    $content .= '</li>';
+  }
+  $content .= '</ul>';
+  return $content;
+}
 
 function modern_footnotes_func($atts, $content = "") {
 	global $modern_footnotes_used_reference_numbers, $modern_footnotes_options, $modern_footnotes_footnotes_in_post;
@@ -56,26 +74,26 @@ function modern_footnotes_func($atts, $content = "") {
   $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '"><a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a></sup>' .
 				'<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
 	$modern_footnotes_used_reference_numbers[] = $display_number;
-  var_dump($modern_footnotes_footnotes_in_post);
 	return $content;
 }
 
 //if the options are set to do so, list the footnotes at the bottom of the page
 function modern_footnotes_display_after_content($content) {
-  global $modern_footnotes_footnotes_in_post, $modern_footnotes_options;
+  global $modern_footnotes_options;
   
   if (
     (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts']) ||
     (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'])
   ) {
-    $content .= '<ul>';
-    foreach($modern_footnotes_footnotes_in_post as $display_number => $footnote_content) {
-      $content .= '<li>';
-      $content .= '<span>' . $display_number . '</span>';
-      $content .= $footnote_content;
-      $content .= '</li>';
+    $options = array();
+    if (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) {
+      if (!isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) || !$modern_footnotes_options['display_footnotes_at_bottom_of_posts']) {
+        $options['show_only_when_printing'] = TRUE;
+      }
+    } else {
+      $options['hide_when_printing'] = TRUE;
     }
-    $content .= '</ul>';
+    $content .= modern_footnotes_list_func($options);
   }
   
   return $content;
@@ -97,6 +115,8 @@ if (isset($modern_footnotes_options['modern_footnotes_custom_shortcode']) && !em
 foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
   add_shortcode($modern_footnote_shortcode, 'modern_footnotes_func');
 }
+
+add_shortcode('mfn_list', 'modern_footnotes_list_func');
 
 add_filter('the_content', 'modern_footnotes_display_after_content', 11);
 add_filter('the_content', 'modern_footnotes_reset_count', 12);
@@ -271,7 +291,7 @@ function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltip
 function modern_footnotes_display_footnotes_at_bottom_of_posts_element_callback() {
 	global $modern_footnotes_options;
 	
-	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
+	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts" name="modern_footnotes_settings[display_footnotes_at_bottom_of_posts]" value="1"' . checked( 1, isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts'], FALSE ) . '/>';
 	$html .= '<label for="display_footnotes_at_bottom_of_posts">' .
             esc_html__('Display footnote list at bottom of posts', 'modern-footnotes') .
             '</label>';
@@ -282,7 +302,7 @@ function modern_footnotes_display_footnotes_at_bottom_of_posts_element_callback(
 function modern_footnotes_display_footnotes_at_bottom_of_posts_when_printing_element_callback() {
 	global $modern_footnotes_options;
 	
-	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts_when_printing" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
+	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts_when_printing" name="modern_footnotes_settings[display_footnotes_at_bottom_of_posts_when_printing]" value="1"' . checked( 1, isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'], FALSE ) . '/>';
 	$html .= '<label for="display_footnotes_at_bottom_of_posts_when_printing">' .
             esc_html__('When printing, list footnotes at the bottom of posts', 'modern-footnotes') .
             '</label>';
