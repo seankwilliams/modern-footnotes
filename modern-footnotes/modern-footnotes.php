@@ -18,46 +18,89 @@ $modern_footnotes_version = '1.4';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
-$modern_footnotes_used_reference_numbers = array(); //keeps track of what reference numbers have been used
-$modern_footnotes_footnotes_in_post = array(); // contains the footnotes in the post, for displaying in a section underneath the post
+//will contain an entry for each unique post displayed on the page. Each post will have three values:
+// modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
+// used_reference_numbers -- an array of the reference numbers for the footnotes that have been used
+// footnotes -- an array containing each individual footnote, keyed by the reference number
+// footnotes_previously_used -- an array, that if it appears, is an array that could contain multiple previous values of the `footnotes` property. The `footnotes` property is reset when `referencereset` is passed into the mfn shortcode, and previously used footnotes are all stored in this array
+$modern_footnotes_all_posts_data = array(); 
 
-function modern_footnotes_list_func($atts=[], $content = "") {
-  global $modern_footnotes_footnotes_in_post;
+$current_modern_footnotes_post_number = 0;
+
+function modern_footnotes_execute_mfn_list_shortcode($content) {
+  $content = str_replace('[mfn_list_execute_after_content_processed]', modern_footnotes_list_footnotes(), $content);
+  return $content;
+}
+
+function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide_when_printing = FALSE) {
+  global $modern_footnotes_all_posts_data;
+  $scope_id = modern_footnotes_get_post_scope_id();
+  if (empty($modern_footnotes_all_posts_data[$scope_id])) {
+    return '';
+  }
+  $footnotes_used = array();
+  if (isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
+    foreach ($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] as $f) {
+      $footnotes_used[] = $f;
+    }
+  }
+  $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+  
   $content = '<ul class="modern-footnotes-list ' . 
-    (isset($atts['show_only_when_printing']) && $atts['show_only_when_printing'] ? 'modern-footnotes-list--show-only-for-print' : '') .
+    ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
     (isset($atts['hide_when_printing']) && $atts['hide_when_printing'] ? 'modern-footnotes-list--hide-for-print' : '') 
     . '">';
-  foreach($modern_footnotes_footnotes_in_post as $display_number => $footnote_content) {
-    $content .= '<li>';
-    $content .= '<span>' . $display_number . '</span>';
-    $content .= '<div>';
-    $content .= $footnote_content;
-    $content .= '</div>';
-    $content .= '</li>';
+  foreach ($footnotes_used as $footnote_list) {
+    foreach($footnote_list as $display_number => $footnote_content) {
+      $content .= '<li>';
+      $content .= '<span>' . $display_number . '</span>';
+      $content .= '<div>';
+      $content .= $footnote_content;
+      $content .= '</div>';
+      $content .= '</li>';
+    }
   }
   $content .= '</ul>';
   return $content;
 }
 
+function modern_footnotes_list_func($atts=[], $content = "") {
+  return '[mfn_list_execute_after_content_processed]';
+}
+
 function modern_footnotes_func($atts, $content = "") {
-	global $modern_footnotes_used_reference_numbers, $modern_footnotes_options, $modern_footnotes_footnotes_in_post;
+
+	global $modern_footnotes_all_posts_data, $modern_footnotes_options;
 	$additional_classes = '';
 	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
 	}
   
+  // $scope_id will have a unique value for each post on the page -- this helps handle when a post is 
+  // nested inside another post, as can happen with the Display Posts plugin
+  $scope_id = modern_footnotes_get_post_scope_id();
+  
   if (isset($atts['referencereset']) && $atts['referencereset'] == 'true') {
-    $modern_footnotes_used_reference_numbers = array();
+    if (isset($modern_footnotes_all_posts_data[$scope_id])) {
+      $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'] = array();
+      // store the content of previously used footnotes, in case we are reusing a reference number and we 
+      // are also using a list of footnotes. 
+      if (!isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
+        $modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] = array($modern_footnotes_all_posts_data[$scope_id]['footnotes']);
+      } else {
+        $modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'][] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+      }
+    }
   }
   
 	$additional_attributes = '';
 	if (isset($atts['referencenumber'])) {
 		$display_number = $atts['referencenumber'];
 		$additional_attributes = 'refnum="' . $display_number . '"';
-	} else if (count($modern_footnotes_used_reference_numbers) == 0) {
+	} else if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
 		$display_number = 1;
 	} else {
-		$display_number = max($modern_footnotes_used_reference_numbers) + 1;
+		$display_number = max($modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers']) + 1;
 	}
   
   $content = do_shortcode($content); // render out any shortcodes within the contents
@@ -65,22 +108,37 @@ function modern_footnotes_func($atts, $content = "") {
   $content = str_replace('<p>','', $content);
   $content = str_replace('</p>','<br /><br />', $content);
   
-  //ensure that reference numbers restart when multiple posts are listed on a page, or when the referencereset attribute is present
-  if (count($modern_footnotes_used_reference_numbers) == 0) {
-    $additional_attributes .= ' data-mfn-reset';
+  if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
+    $modern_footnotes_all_posts_data[$scope_id] = array(
+      'modern_footnotes_post_number' => $GLOBALS['current_modern_footnotes_post_number'],
+      'used_reference_numbers' => array($display_number),
+      'footnotes' => array(
+        $display_number => $content
+      )
+    );
+    $GLOBALS['current_modern_footnotes_post_number']++;
+  } else {
+    $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'][] = $display_number;
+    $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$display_number] = $content;
   }
+	
+  $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
+                '<a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a>' .
+              '</sup>' .
+              '<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
   
-	$modern_footnotes_footnotes_in_post[$display_number] = $content;
-  $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '"><a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a></sup>' .
-				'<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
-	$modern_footnotes_used_reference_numbers[] = $display_number;
-	return $content;
+  return $content;
+  
+  
+  
 }
 
 //if the options are set to do so, list the footnotes at the bottom of the page
 function modern_footnotes_display_after_content($content) {
   global $modern_footnotes_options;
   
+  $show_only_when_printing = FALSE;
+  $hide_when_printing = FALSE;
   if (
     (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts']) ||
     (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'])
@@ -88,23 +146,14 @@ function modern_footnotes_display_after_content($content) {
     $options = array();
     if (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) {
       if (!isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) || !$modern_footnotes_options['display_footnotes_at_bottom_of_posts']) {
-        $options['show_only_when_printing'] = TRUE;
+        $show_only_when_printing = TRUE;
       }
     } else {
-      $options['hide_when_printing'] = TRUE;
+      $hide_when_printing = TRUE;
     }
-    $content .= modern_footnotes_list_func($options);
+    $content .= modern_footnotes_list_footnotes($show_only_when_printing, $hide_when_printing);
   }
   
-  return $content;
-}
-
-//reset the footnote counter for every new post
-function modern_footnotes_reset_count($content) {
-  global $modern_footnotes_footnotes_in_post;
-	global $modern_footnotes_used_reference_numbers;
-  $modern_footnotes_footnotes_in_post = array();
-	$modern_footnotes_used_reference_numbers = array();
   return $content;
 }
 
@@ -118,8 +167,40 @@ foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
 
 add_shortcode('mfn_list', 'modern_footnotes_list_func');
 
+add_filter('the_content', 'modern_footnotes_reset_count', 10); // run before shortcodes are processed
 add_filter('the_content', 'modern_footnotes_display_after_content', 11);
-add_filter('the_content', 'modern_footnotes_reset_count', 12);
+add_filter('the_content', 'modern_footnotes_execute_mfn_list_shortcode', 12);
+
+//reset the footnote counter for every new post
+function modern_footnotes_reset_count($content) {
+  // if we are loading a scope that has previously been loaded, this is our second time loading the post. Reset the footnotes for the post.
+  $scope = modern_footnotes_get_post_scope_id();
+  if (isset($GLOBALS['modern_footnotes_all_posts_data'][$scope])) {
+    unset($GLOBALS['modern_footnotes_all_posts_data'][$scope]);
+  }
+  return $content;
+}
+
+add_action('the_post', 'modern_footnotes_check_post_query',10,2);
+
+// save the unique queries on the page, so that if a post is contained within another post, we can properly scope the
+// footnote numbering to that particular post
+function modern_footnotes_check_post_query($scoped_post, $scoped_query = null) {
+  global $modern_footnotes_active_query;
+  if (isset($scoped_query)) {
+    $modern_footnotes_active_query = $scoped_query;
+  }
+}
+
+// return an ID that can be used to identify the unique post that we are in -- used for listing multiple posts on the 
+// same page, including when posts are nested with plugins like DisplayPosts
+function modern_footnotes_get_post_scope_id() {
+  if ($GLOBALS['modern_footnotes_active_query'] != null) {
+    return spl_object_hash($GLOBALS['modern_footnotes_active_query']) . '_' . $GLOBALS['post']->ID;
+  } else {
+    return 'post_' . $GLOBALS['post']->ID;
+  }
+}
 
 // replace <mfn> HTML tags added by Gutenberg/block editor to [mfn] shortcodes
 // When multiple formats are applied, Gutenberg can have multiple <mfn> tags for one footnote, so we'll have to iterate through the text and group sibling tags together (see https://github.com/seankwilliams/modern-footnotes/issues/14)

@@ -2,7 +2,7 @@
 Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
-Tested up to: 5.6
+Tested up to: 5.7
 Stable tag: 1.4
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
@@ -16,7 +16,7 @@ Use a footnote in your post by using the footnote icon in the WordPress editor o
 
 On desktop, footnotes will appear as a tooltip when the user clicks on the number. On mobile, footnotes will expand as a section below the current text.
 
-You can also use the [mfn-list] shortcode to display a list of footnotes used in the article.
+You can also use the [mfn_list] shortcode to display a list of footnotes used in the article.
 
 See the GitHub repository at: https://github.com/seankwilliams/modern-footnotes
 
