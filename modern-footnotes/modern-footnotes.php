@@ -48,7 +48,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   
   $content = '<ul class="modern-footnotes-list ' . 
     ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
-    (isset($atts['hide_when_printing']) && $atts['hide_when_printing'] ? 'modern-footnotes-list--hide-for-print' : '') 
+    ($hide_when_printing ? 'modern-footnotes-list--hide-for-print' : '') 
     . '">';
   foreach ($footnotes_used as $footnote_list) {
     foreach($footnote_list as $display_number => $footnote_content) {
@@ -80,9 +80,12 @@ function modern_footnotes_func($atts, $content = "") {
   // nested inside another post, as can happen with the Display Posts plugin
   $scope_id = modern_footnotes_get_post_scope_id();
   
+  $additional_attributes = '';
+  
   if (isset($atts['referencereset']) && $atts['referencereset'] == 'true') {
     if (isset($modern_footnotes_all_posts_data[$scope_id])) {
       $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'] = array();
+      $additional_attributes .= ' data-mfn-reset';
       // store the content of previously used footnotes, in case we are reusing a reference number and we 
       // are also using a list of footnotes. 
       if (!isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
@@ -90,14 +93,14 @@ function modern_footnotes_func($atts, $content = "") {
       } else {
         $modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'][] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
       }
+      $modern_footnotes_all_posts_data[$scope_id]['footnotes'] = array();
     }
   }
   
-	$additional_attributes = '';
 	if (isset($atts['referencenumber'])) {
 		$display_number = $atts['referencenumber'];
 		$additional_attributes = 'refnum="' . $display_number . '"';
-	} else if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
+	} else if (!isset($modern_footnotes_all_posts_data[$scope_id]) || count($modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers']) == 0) {
 		$display_number = 1;
 	} else {
 		$display_number = max($modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers']) + 1;

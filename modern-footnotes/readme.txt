@@ -68,7 +68,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
 
 == Changelog ==
-1.4 - 12/31/20 - Added option to list footnotes at bottom of the page
+1.4 - 3/8/21 - Added option to list footnotes at bottom of the page. Fixed issue where Display Posts plugin would cause posts to sometimes render with incorrect numbering.
 1.3.11 - 6/23/20 - Prepared plugin for localization
 1.3.10 - 6/17/20 - Fixed problem on pages that listed multiple posts where footnote numbers wouldn't reset. Added an option to reset footnote numbering with an attribute. Fixed a minor code issue with the Gutenberg editor.
 1.3.9 - 12/29/19 - Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop
