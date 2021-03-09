@@ -1,4 +1,4 @@
-/* Copyright 2017-2020 Sean Williams
+/* Copyright 2017-2021 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -86,11 +86,15 @@ jQuery(function($) {
 	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
 	//will correct the numbering if it's not sequential.
 	var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
-	var usedReferenceNumbers = [0];
+	var usedReferenceNumbers = {};
 	if ($footnotesAnchorLinks.length > 1) {
 		$footnotesAnchorLinks.each(function() {
+      var postScope = $(this).parent().attr("data-mfn-post-scope");
+      if (typeof usedReferenceNumbers[postScope] === 'undefined') {
+        usedReferenceNumbers[postScope] = [0];
+      }
       if ($(this).is("a[data-mfn-reset]")) {
-        usedReferenceNumbers = [0];
+        usedReferenceNumbers[postScope] = [0];
       }
 			if ($(this).is("a[refnum]")) {
 				var manualRefNum = $(this).attr("refnum");
@@ -98,15 +102,15 @@ jQuery(function($) {
 					$(this).html(manualRefNum);
 				}
 				if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
-					usedReferenceNumbers.push(manualRefNum);
+					usedReferenceNumbers[postScope].push(manualRefNum);
 				}
 			}
 			else {
-				var refNum = Math.max.apply(null, usedReferenceNumbers) + 1;
+				var refNum = Math.max.apply(null, usedReferenceNumbers[postScope]) + 1;
 				if ($(this).html() != refNum) {
 					$(this).html(refNum);
 				}
-				usedReferenceNumbers.push(refNum);
+				usedReferenceNumbers[postScope].push(refNum);
 			}
 		});
 	}

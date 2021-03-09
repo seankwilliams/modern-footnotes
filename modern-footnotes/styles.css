@@ -1,4 +1,4 @@
-/* Copyright 2017-2020 Sean Williams
+/* Copyright 2017-2021 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -63,4 +63,33 @@
 	display: block;
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+.modern-footnotes-list {
+  list-style-type: none;
+  font-size: 0.8em;
+  margin: 1em 0;
+  padding-left: 0;
+}
+
+.modern-footnotes-list li {
+  display: flex;
+  margin-bottom: 0.3em;
+}
+
+.modern-footnotes-list span {
+  margin-right: 1.5em;
+  color: #777;
+}
+
+.modern-footnotes-list--show-only-for-print {
+  display: none;
+}
+@media print {
+  .modern-footnotes-list--show-only-for-print {
+    display: block;
+  }
+  .modern-footnotes-list--hide-for-print {
+    display: none;
+  }
 }
