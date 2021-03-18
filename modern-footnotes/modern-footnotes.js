@@ -64,15 +64,15 @@ jQuery(function($) {
 				$(this).html('x');
 			}
 		} else {
-			modern_footnotes_hide_footnotes();
+			modern_footnotes_hide_footnotes($(this));
 		}
 	}).on('click', '.modern-footnotes-footnote__note', null, function(e) {
 		e.stopPropagation();
-	}).on('click', '.modern-footnotes-footnote__note__close a', null, function(e) {
-		e.preventDefault();
-		modern_footnotes_hide_footnotes();
 	}).on('click', function() {
-		modern_footnotes_hide_footnotes();
+    //when clicking the body, close tooltip-style footnotes
+    if ($(window).width() >= 768 && $(".modern-footnotes-footnote--expands-on-desktop").length == 0) {
+      modern_footnotes_hide_footnotes();
+    }
 	});
 
 	//hide all footnotes on window resize or clicking anywhere but on the footnote link
@@ -118,14 +118,26 @@ jQuery(function($) {
 });
 
 
-function modern_footnotes_hide_footnotes() {
-	jQuery(".modern-footnotes-footnote a").each(function() {
-		var $this = jQuery(this);
-		if ($this.data('unopenedContent')) {
-			$this.html($this.data('unopenedContent'));
-		}
-	});
-	jQuery(".modern-footnotes-footnote__note").hide().css({'left': '', 'top': ''}); //remove left and top property to prevent improper calculations per the bug report at https://wordpress.org/support/topic/footnotes-resizing-on-subsequent-clicks/
-	jQuery(".modern-footnotes-footnote__connector").remove();
-	jQuery(".modern-footnotes-footnote--selected").removeClass("modern-footnotes-footnote--selected");
+/* if $footnoteAnchor provided, closes that footnote. Otherwise, closes all footnotes */
+function modern_footnotes_hide_footnotes($footnoteAnchor) {
+  if ($footnoteAnchor != null) {
+    if ($footnoteAnchor.data('unopenedContent')) {
+      $footnoteAnchor.html($footnoteAnchor.data('unopenedContent'));
+    }
+    let $note = $footnoteAnchor.parent().next(".modern-footnotes-footnote__note");
+    $note.hide().css({'left': '', 'top': ''}); //remove left and top property to prevent improper calculations per the bug report at https://wordpress.org/support/topic/footnotes-resizing-on-subsequent-clicks/
+    $note.next(".modern-footnotes-footnote__connector").remove();
+    $footnoteAnchor.removeClass("modern-footnotes-footnote--selected");
+  } else {
+    jQuery(".modern-footnotes-footnote a").each(function() {
+      var $this = jQuery(this);
+      if ($this.data('unopenedContent')) {
+        $this.html($this.data('unopenedContent'));
+      }
+    });
+    jQuery(".modern-footnotes-footnote__note").hide().css({'left': '', 'top': ''}); //remove left and top property to prevent improper calculations per the bug report at https://wordpress.org/support/topic/footnotes-resizing-on-subsequent-clicks/
+    jQuery(".modern-footnotes-footnote__connector").remove();
+    jQuery(".modern-footnotes-footnote--selected").removeClass("modern-footnotes-footnote--selected");
+  }
 }
+

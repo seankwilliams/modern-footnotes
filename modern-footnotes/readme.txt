@@ -3,11 +3,11 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 5.7
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-Add inline footnotes to your posts. On desktop, the footnotes will appear as tooltips. On mobile, the footnote will expand beneath the text.
+Add inline footnotes to your posts. On desktop, the footnotes will appear as tooltips. On mobile, the footnote will expand beneath the text. The plugin includes an option to display footnotes at the bottom of posts/pages.
 
 == Description ==
 Footnotes optimized for desktop and mobile, inspired by the styles of Grantland and FiveThirtyEight.
@@ -66,8 +66,10 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
 2. http://prismtechstudios.com/modern-footnotes/modern-footnotes-2.png
 3. http://prismtechstudios.com/modern-footnotes/modern-footnotes-3.png
+4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+1.4.2 - 3/17/21 - Change "x" button to only close one collapsible footnote at a time to prevent mobile scrolling issues
 1.4.1 - 3/9/21 - Added CSS to make the footnotes list display better with some themes.
 1.4 - 3/8/21 - Added option to list footnotes at bottom of the page. Fixed issue where Display Posts plugin would cause posts to sometimes render with incorrect numbering.
 1.3.11 - 6/23/20 - Prepared plugin for localization
