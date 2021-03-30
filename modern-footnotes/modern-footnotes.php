@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.2
+Version:     1.4.3
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,9 +14,20 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.2';
+$modern_footnotes_version = '1.4.3';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
+
+// set default options, if they have not been set
+if ($modern_footnotes_options === FALSE) {
+  $modern_footnotes_options = [];
+}
+if (get_option('modern_footnotes_include_footnote_list_at_end_of_rss_content_default_value_has_been_set') === FALSE && 
+    !isset($modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content'])) {
+  $modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content'] = 1;
+  update_option('modern_footnotes_include_footnote_list_at_end_of_rss_content_default_value_has_been_set', 1); // this variable is so the default value doesn't get reset if modern_footnotes_include_footnote_list_at_end_of_rss_content is removed from optiosn (which happens when the settings checkbox is unchecked)
+  update_option('modern_footnotes_settings', $modern_footnotes_options);
+}
 
 //will contain an entry for each unique post displayed on the page. Each post will have three values:
 // modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
@@ -32,7 +43,7 @@ function modern_footnotes_execute_mfn_list_shortcode($content) {
   return $content;
 }
 
-function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide_when_printing = FALSE) {
+function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide_when_printing = FALSE, $for_rss_feed = FALSE) {
   global $modern_footnotes_all_posts_data;
   $scope_id = modern_footnotes_get_post_scope_id();
   if (empty($modern_footnotes_all_posts_data[$scope_id])) {
@@ -46,26 +57,49 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   }
   $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
   
-  $content = '<ul class="modern-footnotes-list ' . 
-    ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
-    ($hide_when_printing ? 'modern-footnotes-list--hide-for-print' : '') 
-    . '">';
-  foreach ($footnotes_used as $footnote_list) {
-    foreach($footnote_list as $display_number => $footnote_content) {
-      $content .= '<li>';
-      $content .= '<span>' . $display_number . '</span>';
-      $content .= '<div>';
-      $content .= $footnote_content;
-      $content .= '</div>';
-      $content .= '</li>';
+  $content = '';
+  if ($for_rss_feed) {
+    $content .= '<b>Footnotes</b>';
+    foreach ($footnotes_used as $footnote_list) {
+      foreach($footnote_list as $display_number => $footnote_content) {
+        $content .= '<div>';
+        $content .= $display_number;
+        $content .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+        $content .= $footnote_content;
+        $content .= '</div>';
+      }
     }
   }
-  $content .= '</ul>';
+  else {
+    $content .= '<ul class="modern-footnotes-list ' . 
+      ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
+      ($hide_when_printing ? 'modern-footnotes-list--hide-for-print' : '') 
+      . '">';
+    foreach ($footnotes_used as $footnote_list) {
+      foreach($footnote_list as $display_number => $footnote_content) {
+        $content .= '<li>';
+        $content .= '<span>' . $display_number . '</span>';
+        $content .= '<div>';
+        $content .= $footnote_content;
+        $content .= '</div>';
+        $content .= '</li>';
+      }
+    }
+    $content .= '</ul>';
+  }
   return $content;
 }
 
 function modern_footnotes_list_func($atts=[], $content = "") {
   return '[mfn_list_execute_after_content_processed]';
+}
+
+function modern_footnotes_rss_func($atts, $content = "") {
+  if (!is_array($atts)) {
+    $atts = [];
+  }
+  $atts['for_rss_feed'] = TRUE;
+  return modern_footnotes_func($atts,$content);
 }
 
 function modern_footnotes_func($atts, $content = "") {
@@ -124,11 +158,15 @@ function modern_footnotes_func($atts, $content = "") {
     $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'][] = $display_number;
     $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$display_number] = $content;
   }
-	
-  $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
-                '<a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a>' .
-              '</sup>' .
-              '<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
+
+  if (isset($atts['for_rss_feed']) && $atts['for_rss_feed']) {
+    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . $display_number . '</sup>'; // only display the superscript for RSS feeds
+  } else {
+    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
+                  '<a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a>' .
+                '</sup>' .
+                '<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
+  }
   
   return $content;
   
@@ -143,8 +181,11 @@ function modern_footnotes_display_after_content($content) {
   $show_only_when_printing = FALSE;
   $hide_when_printing = FALSE;
   if (
-    (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts']) ||
-    (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'])
+    (!isset($GLOBALS['modern_footnotes_displaying_rss_feed']) || !$GLOBALS['modern_footnotes_displaying_rss_feed']) && 
+    (
+      (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts']) ||
+      (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'])
+    )
   ) {
     $options = array();
     if (isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) {
@@ -325,6 +366,14 @@ function modern_footnotes_register_settings() { // whitelist options
 		'modern_footnotes_option_group_section'
 	);
   
+  add_settings_field(
+		'modern_footnotes_include_footnote_list_at_end_of_rss_content',
+		__('For post content in RSS feeds, list footnotes at the bottom of posts', 'modern-footnotes'),
+		'modern_footnotes_include_footnote_list_at_end_of_rss_content_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section'
+	);
+  
 	add_settings_field(
 		'modern_footnotes_custom_css',
 		__('Modern Footnotes Custom CSS', 'modern-footnotes'),
@@ -367,6 +416,17 @@ function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltip
 	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
 	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">' .
             esc_html__('Use expandable footnotes on desktop insetad of the default tooltip style', 'modern-footnotes') .
+            '</label>';
+
+	echo $html;
+}
+
+function modern_footnotes_include_footnote_list_at_end_of_rss_content_element_callback() {
+  global $modern_footnotes_options;
+	
+	$html = '<input type="checkbox" id="modern_footnotes_include_footnote_list_at_end_of_rss_content" name="modern_footnotes_settings[modern_footnotes_include_footnote_list_at_end_of_rss_content]" value="1"' . checked( 1, isset($modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content']) && $modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content'], FALSE ) . '/>';
+	$html .= '<label for="modern_footnotes_include_footnote_list_at_end_of_rss_content">' .
+            esc_html__('For post content in RSS feeds, list footnotes at the bottom of posts', 'modern-footnotes') .
             '</label>';
 
 	echo $html;
@@ -421,15 +481,37 @@ function modern_footnotes_return_blank_for_rss_func($atts, $content = "") {
 }
 
 // remove shortcode from RSS feed
-function modern_footnotes_remove_from_rss_feed($content){
+function modern_footnotes_remove_from_rss_content_feed($content) {
+  return modern_footnotes_remove_from_rss_feed($content, TRUE);
+}
+function modern_footnotes_remove_from_rss_feed($content, $is_content_section = FALSE){
   foreach ($GLOBALS['modern_footnotes_shortcodes'] as $modern_footnote_shortcode) {
     remove_shortcode($modern_footnote_shortcode);
-    add_shortcode($modern_footnote_shortcode, 'modern_footnotes_return_blank_for_rss_func');
+    if ($GLOBALS['modern_footnotes_options']['modern_footnotes_include_footnote_list_at_end_of_rss_content']) {
+      add_shortcode($modern_footnote_shortcode, 'modern_footnotes_rss_func');
+    } else {
+      add_shortcode($modern_footnote_shortcode, 'modern_footnotes_return_blank_for_rss_func');
+    }
   }
+  // do not let the [mfn_list] shortcode execute in the RSS feed
+  remove_shortcode('mfn_list');
+  add_shortcode('mfn_list', 'modern_footnotes_return_blank_for_rss_func');
+  // add a [mfn_rss_list] shortcode to the end of the post content
+  if ($GLOBALS['modern_footnotes_options']['modern_footnotes_include_footnote_list_at_end_of_rss_content'] && $is_content_section) {
+    $content .= modern_footnotes_list_footnotes(FALSE,FALSE,TRUE);
+  }
+  
   return $content;
 }
 add_filter('the_excerpt_rss', 'modern_footnotes_remove_from_rss_feed');
-add_filter('the_content_feed', 'modern_footnotes_remove_from_rss_feed');
+add_filter('the_content_feed', 'modern_footnotes_remove_from_rss_content_feed');
+
+// set variable to let us know we are in an rss feed
+function modern_footnotes_in_rss() {
+  $GLOBALS['modern_footnotes_displaying_rss_feed'] = TRUE;
+}
+add_action('rss_head', 'modern_footnotes_in_rss'); // for RSS 1
+add_action('rss_tag_pre', 'modern_footnotes_in_rss'); //for all other feed types
 
 
 if (is_admin()) { // admin actions
