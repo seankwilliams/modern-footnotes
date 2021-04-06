@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.3
+Version:     1.4.4
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.3';
+$modern_footnotes_version = '1.4.4';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -91,6 +91,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
 }
 
 function modern_footnotes_list_func($atts=[], $content = "") {
+  modern_footnotes_enqueue_scripts_styles_if_not_already_enqueued();
   return '[mfn_list_execute_after_content_processed]';
 }
 
@@ -105,6 +106,9 @@ function modern_footnotes_rss_func($atts, $content = "") {
 function modern_footnotes_func($atts, $content = "") {
 
 	global $modern_footnotes_all_posts_data, $modern_footnotes_options;
+  
+  modern_footnotes_enqueue_scripts_styles_if_not_already_enqueued();
+  
 	$additional_classes = '';
 	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
@@ -293,17 +297,45 @@ add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
  
 
 
-function modern_footnotes_enqueue_scripts_styles() {
-	global $modern_footnotes_options, $modern_footnotes_version;
-	wp_enqueue_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), $modern_footnotes_version);
-	wp_enqueue_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), $modern_footnotes_version, TRUE); 
+function modern_footnotes_register_scripts_styles() {
+	global $modern_footnotes_options, $modern_footnotes_shortcodes, $modern_footnotes_version, $post;
+	wp_register_style('modern_footnotes', plugin_dir_url(__FILE__) . 'styles.min.css', array(), $modern_footnotes_version);
+	wp_register_script('modern_footnotes', plugin_dir_url(__FILE__) . 'modern-footnotes.min.js', array('jquery'), $modern_footnotes_version, TRUE); 
 	
 	if (!is_admin() && isset($modern_footnotes_options['modern_footnotes_custom_css']) && !empty($modern_footnotes_options['modern_footnotes_custom_css'])) {
 		wp_add_inline_style( 'modern_footnotes', $modern_footnotes_options['modern_footnotes_custom_css'] );
 	}
+  
+  // if we are in a post, and the post uses the shortcode, enqueue the style + script
+  // this is not foolproof since the shortcode could be used in other ways (like post metadata), so we
+  // will have to check when rendering the shortcodes to ensure that the scripts/styles are enqueued
+  if (is_a( $post, 'WP_Post' )) {
+    $has_shortcode = FALSE;
+    foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
+      if (has_shortcode($post->post_content, $modern_footnote_shortcode)) {
+        $has_shortcode = TRUE;
+      }
+    }
+    if (has_shortcode($post->post_content, 'mfn_list')) {
+      $has_shortcode = TRUE;
+    }
+    if ($has_shortcode) {
+      wp_enqueue_style('modern_footnotes');
+      wp_enqueue_script('modern_footnotes');
+    }
+  }
 }
 
-add_action('wp_enqueue_scripts', 'modern_footnotes_enqueue_scripts_styles'); 
+add_action('wp_enqueue_scripts', 'modern_footnotes_register_scripts_styles'); 
+
+function modern_footnotes_enqueue_scripts_styles_if_not_already_enqueued() {
+  if (!wp_style_is('modern_footnotes')) {
+    wp_enqueue_style('modern_footnotes');
+  }
+  if (!wp_script_is('modern_footnotes')) {
+    wp_enqueue_script('modern_footnotes');
+  }
+}
 
 //
 //modify the admin

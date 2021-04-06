@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 5.7
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -69,6 +69,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+1.4.4 - 4/5/21 - Fix to issue where footnotes would sometimes interfere with line height. Only load CSS/JS for Modern Footnotes on pages where it's used.
 1.4.3 - 3/29/21 - Add an option to list footnotes at the bottom of an RSS feed
 1.4.2 - 3/17/21 - Change "x" button to only close one collapsible footnote at a time to prevent mobile scrolling issues
 1.4.1 - 3/9/21 - Added CSS to make the footnotes list display better with some themes.
