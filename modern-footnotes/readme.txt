@@ -69,6 +69,7 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+1.4.4 - 4/7/21 - Fixed PHP warning
 1.4.3 - 3/29/21 - Add an option to list footnotes at the bottom of an RSS feed
 1.4.2 - 3/17/21 - Change "x" button to only close one collapsible footnote at a time to prevent mobile scrolling issues
 1.4.1 - 3/9/21 - Added CSS to make the footnotes list display better with some themes.
