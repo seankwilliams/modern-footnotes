@@ -78,7 +78,7 @@
   margin-bottom: 0.3em;
 }
 
-.modern-footnotes-list span {
+.modern-footnotes-list li > span { /* use specific selector so that spans created by shortcodes are not rendered */
   margin-right: 1.5em;
   color: #777;
   /* override CSS that would otherwise break the numbers onto separate lines */
