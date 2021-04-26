@@ -15,8 +15,8 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-const { __ } = wp.i18n;
 ( function( wp ) {
+    var { __ } = wp.i18n;
     var ModernFootnotesButton = function( props ) {
         return wp.element.createElement(
             wp.editor.RichTextToolbarButton, {

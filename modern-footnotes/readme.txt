@@ -18,7 +18,7 @@ On desktop, footnotes will appear as a tooltip when the user clicks on the numbe
 
 You can also use the [mfn_list] shortcode to display a list of footnotes used in the article.
 
-See the GitHub repository at: https://github.com/seankwilliams/modern-footnotes
+The official GitHub repository is at <a href="https://github.com/seankwilliams/modern-footnotes" target="_blank">https://github.com/seankwilliams/modern-footnotes</a>
 
 == Installation ==
 1. Upload the modern-footnotes folder to your wp-content/plugins directory.
@@ -62,6 +62,9 @@ Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor 
 =Why isn't the word "footnote" appearing by all of my footnotes in the Block Editor/Gutenberg Editor?=
 The word "footnote" only shows up by the first footnote in each paragraph in the editor, but all footnotes are highlighted gray. This is to work around a technical limitation of Gutenberg's editor, though hopefully we can come up with a better solution in the future. Don't worry, your footnotes will show up correctly when viewing the page/blog post though!
 
+=How can I support the plugin's development?=
+Modern Footnotes is an open source project built with its contributors' free time. Any gestures of support are quite meaningful. You can support the plugin by leaving a positive review or <a href="https://ko-fi.com/modernfootnotes" target="_blank">buying a coffee for the developer</a>. And, if you would like to help develop the plugin, we deeply appreciate any contributions to the project on <a href="https://github.com/seankwilliams/modern-footnotes" target="_blank">GitHub</a>.
+
 == Screenshots ==
 1. http://prismtechstudios.com/modern-footnotes/modern-footnotes-1.png
 2. http://prismtechstudios.com/modern-footnotes/modern-footnotes-2.png
@@ -69,35 +72,103 @@ The word "footnote" only shows up by the first footnote in each paragraph in the
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
-1.4.5 - 4/21/21 - Fix to issue where footnotes would sometimes interfere with line height. Only load CSS/JS for Modern Footnotes on pages where it's used.
-1.4.4 - 4/7/21 - Fixed PHP warning
-1.4.3 - 3/29/21 - Add an option to list footnotes at the bottom of an RSS feed
-1.4.2 - 3/17/21 - Change "x" button to only close one collapsible footnote at a time to prevent mobile scrolling issues
-1.4.1 - 3/9/21 - Added CSS to make the footnotes list display better with some themes.
-1.4 - 3/8/21 - Added option to list footnotes at bottom of the page. Fixed issue where Display Posts plugin would cause posts to sometimes render with incorrect numbering.
-1.3.11 - 6/23/20 - Prepared plugin for localization
-1.3.10 - 6/17/20 - Fixed problem on pages that listed multiple posts where footnote numbers wouldn't reset. Added an option to reset footnote numbering with an attribute. Fixed a minor code issue with the Gutenberg editor.
-1.3.9 - 12/29/19 - Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop
-1.3.8 - 11/12/19 - Fixed problems with some custom implementations where footnotes wouldn't open due to extra DOM elements being placed between the footnote link & content
-1.3.7 - 11/7/19 - Fixed JavaScript error
-1.3.6 - 11/6/19 - Fix for problem where clicking on a footnote with the same numbering as another footnote would open both footnotes
-1.3.5 - 10/28/19 - Fix for problem where footnote numbering would incorrectly start with '3' in some cases, especially when combined with the Yoast SEO plugin
-1.3.4 - 10/23/19 - Fix for problem where some extra, empty footnotes would randomly appear
-1.3.3 - 10/16/19 - Fix issue where applying multiple formats in conjunction with footnotes in the Gutenberg editor would mess up footnote formatting
-1.3.2 - 9/18/19 - Fix issue where links inside footnotes wouldn't appear inline with other text
-1.3.1 - 9/18/19 - Updated style so that long links are truncated with ellipsis in tooltips
-1.3.0 - 2/19/19 - Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
-1.2.7 - 1/29/19 - Fixed additional shortcode rendering issue in RSS feeds.
-1.2.6 - 1/28/19 - Removed footnote shortcodes from rendering in RSS feeds.
-1.2.5 - 11/30/18 - Fixed issue with footnotes causing line breaks.
-1.2.4 - 11/30/18 - Fixed a problem where HTML tags could not be entered inside a footnote.
-1.2.3 - 11/1/18 - Tested with WordPress 5.0
-1.2.2 - 10/8/18 - Changed license from LGPL to GPL2.
-1.2.1 - 10/3/18 - Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
-1.2 - 9/14/18 - Stopped using href="#" for `a` HTML elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
-1.1.4 - 1/27/18 - Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
-1.1.3 - 1/11/18 - Fixed issue where icon was not showing in the admin MCE editor
-1.1.2 - 1/6/18 - Fixed problem where scripts were enqueued incorrectly.
-1.1.1 - 11/22/17 - Fixed error occuring in PHP versions below 5.3
-1.1 - 11/8/17 - Added option to use expandable version of footnotes on desktop instead of the default tooltip style.
-1.0 - 4/1/17 - initial version.
+= 1.4.5 =
+* Fix to issue where footnotes would sometimes interfere with line height. 
+* Only load CSS/JS for Modern Footnotes on pages where it's used. 
+* Add option to show tooltips on hover. 
+* Add title attribute to a element that opens footnotes. 
+* Fixed issue with rendering footnotes in excerpts. 
+* Fixed issue related to WordPress back-end compatibility with other plugins.
+
+=1.4.4=
+* Fixed PHP warning
+
+=1.4.3=
+* Add an option to list footnotes at the bottom of an RSS feed
+
+=1.4.2=
+* Change "x" button to only close one collapsible footnote at a time to prevent mobile scrolling issues
+
+=1.4.1=
+* Added CSS to make the footnotes list display better with some themes.
+
+=1.4=
+* Added option to list footnotes at bottom of the page. Fixed issue where Display Posts plugin would cause posts to sometimes render with incorrect numbering.
+
+=1.3.11=
+* Prepared plugin for localization
+
+=1.3.10=
+* Fixed problem on pages that listed multiple posts where footnote numbers wouldn't reset. Added an option to reset footnote numbering with an attribute. Fixed a minor code issue with the Gutenberg editor.
+
+=1.3.9=
+* Fixed problem in Chrome where a footnote near the right side of the screen would appear with compressed width on desktop
+
+=1.3.8=
+* Fixed problems with some custom implementations where footnotes wouldn't open due to extra DOM elements being placed between the footnote link & content
+
+=1.3.7=
+* Fixed JavaScript error
+
+=1.3.6=
+* Fix for problem where clicking on a footnote with the same numbering as another footnote would open both footnotes
+
+=1.3.5=
+* Fix for problem where footnote numbering would incorrectly start with '3' in some cases, especially when combined with the Yoast SEO plugin
+
+=1.3.4=
+* Fix for problem where some extra, empty footnotes would randomly appear
+
+=1.3.3=
+* Fix issue where applying multiple formats in conjunction with footnotes in the Gutenberg editor would mess up footnote formatting
+
+=1.3.2=
+* Fix issue where links inside footnotes wouldn't appear inline with other text
+
+=1.3.1=
+* Updated style so that long links are truncated with ellipsis in tooltips
+
+=1.3.0=
+* Fixed problem where Classic Editor button did not appear in WP 5.x. Added Gutenberg button. Allow shortcode within footnotes.
+
+=1.2.7=
+* Fixed additional shortcode rendering issue in RSS feeds.
+
+=1.2.6=
+* Removed footnote shortcodes from rendering in RSS feeds.
+
+=1.2.5=
+* Fixed issue with footnotes causing line breaks.
+
+=1.2.4=
+* Fixed a problem where HTML tags could not be entered inside a footnote.
+
+=1.2.3=
+* Tested with WordPress 5.0
+
+=1.2.2=
+* Changed license from LGPL to GPL2.
+
+=1.2.1=
+* Fixed a problem where footnote would improperly size when it was opened multiple times at the edge of a container
+
+=1.2=
+* Stopped using href="#" for `a` HTML elements for increased theme compatibility. Added ability to have a custom shortcode. Added a custom CSS area. Added the ability to manually override citations.
+
+=1.1.4=
+* Fixed issue where footnote numbering wouldn't be sequential when other plugins like TablePress caused shortcodes to render in a different order than they appear in the HTML.
+
+=1.1.3=
+* Fixed issue where icon was not showing in the admin MCE editor
+
+=1.1.2=
+* Fixed problem where scripts were enqueued incorrectly.
+
+=1.1.1=
+* Fixed error occuring in PHP versions below 5.3
+
+=1.1=
+* Added option to use expandable version of footnotes on desktop instead of the default tooltip style
+
+=1.0=
+* initial version

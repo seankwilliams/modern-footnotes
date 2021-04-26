@@ -28,6 +28,17 @@ if (get_option('modern_footnotes_include_footnote_list_at_end_of_rss_content_def
   update_option('modern_footnotes_include_footnote_list_at_end_of_rss_content_default_value_has_been_set', 1); // this variable is so the default value doesn't get reset if modern_footnotes_include_footnote_list_at_end_of_rss_content is removed from optiosn (which happens when the settings checkbox is unchecked)
   update_option('modern_footnotes_settings', $modern_footnotes_options);
 }
+if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated') === FALSE && 
+    !isset($modern_footnotes_options['desktop_footnote_behavior']) && 
+    isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'])) {
+  if ($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
+    $modern_footnotes_options['desktop_footnote_behavior'] = 'expandable';
+  } else {
+    $modern_footnotes_options['desktop_footnote_behavior'] = 'tooltip_click';
+  }
+  update_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated', 1); // this variable is so the default value doesn't get re-migrated
+  update_option('modern_footnotes_settings', $modern_footnotes_options);
+}
 
 //will contain an entry for each unique post displayed on the page. Each post will have three values:
 // modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
@@ -110,9 +121,17 @@ function modern_footnotes_func($atts, $content = "") {
   modern_footnotes_enqueue_scripts_styles_if_not_already_enqueued();
   
 	$additional_classes = '';
-	if (isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
+  if (
+      (isset($modern_footnotes_options['desktop_footnote_behavior']) && $modern_footnotes_options['desktop_footnote_behavior'] == 'expandable')
+      /* legacy option use_expandable_footnotes_on_desktop_instead_of_tooltips - should not be set in modern footnotes 1.4.5+ */
+      || (
+        !isset($modern_footnotes_options['desktop_footnote_behavior'] && isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']
+      )
+    ) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
-	}
+	} else if (isset($modern_footnotes_options['desktop_footnote_behavior']) && $modern_footnotes_options['desktop_footnote_behavior'] == 'tooltip_hover') {
+    $additional_classes = 'modern-footnotes-footnote--hover-on-desktop';
+  }
   
   // $scope_id will have a unique value for each post on the page -- this helps handle when a post is 
   // nested inside another post, as can happen with the Display Posts plugin
@@ -167,7 +186,7 @@ function modern_footnotes_func($atts, $content = "") {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . $display_number . '</sup>'; // only display the superscript for RSS feeds
   } else {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
-                  '<a href="javascript:void(0)" ' . $additional_attributes . '>' . $display_number . '</a>' .
+                  '<a href="javascript:void(0)" ' . $additional_attributes . ' title="' . htmlspecialchars(strip_tags($content)) . '">' . $display_number . '</a>' .
                 '</sup>' .
                 '<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
   }
@@ -294,6 +313,7 @@ function modern_footnotes_replace_mfn_tag_with_shortcode( $content ) {
   return $finalContent;
 }
 add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
+add_filter( 'the_excerpt', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
  
 
 
@@ -375,10 +395,11 @@ function modern_footnotes_register_settings() { // whitelist options
 		function() { /* do nothing, no HTML needed for section heading */ },
 		__FILE__
 	);
-	add_settings_field(
-		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips',
-		__('Expandable footnotes on desktop', 'modern-footnotes'),
-		'modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback',
+  
+  add_settings_field(
+		'modern_footnotes_desktop_footnote_behavior',
+		__('Desktop footnote behavior', 'modern-footnotes'),
+		'modern_footnotes_desktop_footnote_behavior_dropdown_callback',
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
@@ -386,24 +407,36 @@ function modern_footnotes_register_settings() { // whitelist options
   add_settings_field(
 		'display_footnotes_at_bottom_of_posts',
 		__('Display footnote list at bottom of posts', 'modern-footnotes'),
-		'modern_footnotes_display_footnotes_at_bottom_of_posts_element_callback',
+		'modern_footnotes_checkbox_element_callback',
 		__FILE__,
-		'modern_footnotes_option_group_section'
+		'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'display_footnotes_at_bottom_of_posts',
+      'property_label' => 'Display footnote list at bottom of posts'
+    )
 	);
   add_settings_field(
 		'display_footnotes_at_bottom_of_posts_when_printing',
 		__('When printing, list footnotes at the bottom of posts', 'modern-footnotes'),
-		'modern_footnotes_display_footnotes_at_bottom_of_posts_when_printing_element_callback',
+		'modern_footnotes_checkbox_element_callback',
 		__FILE__,
-		'modern_footnotes_option_group_section'
+		'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'display_footnotes_at_bottom_of_posts_when_printing',
+      'property_label' => 'When printing, list footnotes at the bottom of posts'
+    )
 	);
   
   add_settings_field(
 		'modern_footnotes_include_footnote_list_at_end_of_rss_content',
 		__('For post content in RSS feeds, list footnotes at the bottom of posts', 'modern-footnotes'),
-		'modern_footnotes_include_footnote_list_at_end_of_rss_content_element_callback',
+		'modern_footnotes_checkbox_element_callback',
 		__FILE__,
-		'modern_footnotes_option_group_section'
+		'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'modern_footnotes_include_footnote_list_at_end_of_rss_content',
+      'property_label' => 'For post content in RSS feeds, list footnotes at the bottom of posts'
+    )
 	);
   
 	add_settings_field(
@@ -442,47 +475,41 @@ function modern_footnotes_sanitize_callback($plugin_options) {
 	return $plugin_options;
 }
 
-function modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_element_callback() {
+function modern_footnotes_checkbox_element_callback($args) {
 	global $modern_footnotes_options;
+  
+  $property_name = $args['property_name'];
+  $property_label = $args['property_label'];
 	
-	$html = '<input type="checkbox" id="use_expandable_footnotes_on_desktop_instead_of_tooltips" name="modern_footnotes_settings[use_expandable_footnotes_on_desktop_instead_of_tooltips]" value="1"' . checked( 1, isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'], FALSE ) . '/>';
-	$html .= '<label for="use_expandable_footnotes_on_desktop_instead_of_tooltips">' .
-            esc_html__('Use expandable footnotes on desktop insetad of the default tooltip style', 'modern-footnotes') .
+	$html = '<input type="checkbox" id="%1$s" name="modern_footnotes_settings[%1$s]" value="1"' . checked( 1, isset($modern_footnotes_options[$property_name]) && $modern_footnotes_options[$property_name], FALSE ) . '/>';
+	$html .= '<label for="%1$s">' .
+            esc_html__($property_label, 'modern-footnotes') .
             '</label>';
+  $html = sprintf($html, $property_name);
 
 	echo $html;
 }
 
-function modern_footnotes_include_footnote_list_at_end_of_rss_content_element_callback() {
+function modern_footnotes_desktop_footnote_behavior_dropdown_callback() {
   global $modern_footnotes_options;
+  
+  $selected_value = isset($modern_footnotes_options['desktop_footnote_behavior']) ? $modern_footnotes_options['desktop_footnote_behavior'] : '';
 	
-	$html = '<input type="checkbox" id="modern_footnotes_include_footnote_list_at_end_of_rss_content" name="modern_footnotes_settings[modern_footnotes_include_footnote_list_at_end_of_rss_content]" value="1"' . checked( 1, isset($modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content']) && $modern_footnotes_options['modern_footnotes_include_footnote_list_at_end_of_rss_content'], FALSE ) . '/>';
-	$html .= '<label for="modern_footnotes_include_footnote_list_at_end_of_rss_content">' .
-            esc_html__('For post content in RSS feeds, list footnotes at the bottom of posts', 'modern-footnotes') .
-            '</label>';
-
-	echo $html;
-}
-
-function modern_footnotes_display_footnotes_at_bottom_of_posts_element_callback() {
-	global $modern_footnotes_options;
-	
-	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts" name="modern_footnotes_settings[display_footnotes_at_bottom_of_posts]" value="1"' . checked( 1, isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts'], FALSE ) . '/>';
-	$html .= '<label for="display_footnotes_at_bottom_of_posts">' .
-            esc_html__('Display footnote list at bottom of posts', 'modern-footnotes') .
-            '</label>';
-
-	echo $html;
-}
-
-function modern_footnotes_display_footnotes_at_bottom_of_posts_when_printing_element_callback() {
-	global $modern_footnotes_options;
-	
-	$html = '<input type="checkbox" id="display_footnotes_at_bottom_of_posts_when_printing" name="modern_footnotes_settings[display_footnotes_at_bottom_of_posts_when_printing]" value="1"' . checked( 1, isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts_when_printing'], FALSE ) . '/>';
-	$html .= '<label for="display_footnotes_at_bottom_of_posts_when_printing">' .
-            esc_html__('When printing, list footnotes at the bottom of posts', 'modern-footnotes') .
-            '</label>';
-
+  $options = array(
+    'tooltip_click' => __('Tooltip footnotes that open on click', 'modern-footnotes'),
+    'tooltip_hover' => __('Tooltip footnotes that open on hover', 'modern-footnotes'),
+    'expandable' => __('Expandable footnotes', 'modern-footnotes'),
+  );
+  
+	$html = '<select id="modern_footnotes_desktop_footnote_behavior" name="modern_footnotes_settings[desktop_footnote_behavior]"> aria-label="%1$s"';
+  for ($options as $key => $value) {
+    $option_html = '<option value="%s" %s>%s</option>';
+    $html .= sprintf($option_html, $key, $selected_value == $key ? 'selected' : '', $value);
+  }
+  $html .= '</select>';
+  
+  $html = sprintf($html, __('Desktop footnote behavior', 'modern-footnotes'));
+  
 	echo $html;
 }
 
