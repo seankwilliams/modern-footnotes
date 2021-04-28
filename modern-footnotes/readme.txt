@@ -73,12 +73,13 @@ Modern Footnotes is an open source project built with its contributors' free tim
 
 == Changelog ==
 = 1.4.5 =
-* Fix to issue where footnotes would sometimes interfere with line height. 
-* Only load CSS/JS for Modern Footnotes on pages where it's used. 
-* Add option to show tooltips on hover. 
-* Add title attribute to a element that opens footnotes. 
-* Fixed issue with rendering footnotes in excerpts. 
-* Fixed issue related to WordPress back-end compatibility with other plugins.
+* Fix to issue where footnotes would sometimes interfere with line height
+* Only load CSS/JS for Modern Footnotes on pages where it's used
+* Add option to show tooltips on hover
+* Add title attribute to a element that opens footnotes
+* Fixed issue with rendering footnotes in excerpts
+* Fixed issue related to WordPress back-end compatibility with other plugins
+* Accessibility improvements: set focus in and out of tooltip footnotes, and make the escape key work when in a footnote
 
 =1.4.4=
 * Fixed PHP warning

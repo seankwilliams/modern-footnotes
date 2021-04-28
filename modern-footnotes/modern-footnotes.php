@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.4';
+$modern_footnotes_version = '1.4.5';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -30,12 +30,9 @@ if (get_option('modern_footnotes_include_footnote_list_at_end_of_rss_content_def
 }
 if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated') === FALSE && 
     !isset($modern_footnotes_options['desktop_footnote_behavior']) && 
-    isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips'])) {
-  if ($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
-    $modern_footnotes_options['desktop_footnote_behavior'] = 'expandable';
-  } else {
-    $modern_footnotes_options['desktop_footnote_behavior'] = 'tooltip_click';
-  }
+    isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) &&
+    $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) {
+  $modern_footnotes_options['desktop_footnote_behavior'] = 'expandable';
   update_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated', 1); // this variable is so the default value doesn't get re-migrated
   update_option('modern_footnotes_settings', $modern_footnotes_options);
 }
@@ -125,7 +122,7 @@ function modern_footnotes_func($atts, $content = "") {
       (isset($modern_footnotes_options['desktop_footnote_behavior']) && $modern_footnotes_options['desktop_footnote_behavior'] == 'expandable')
       /* legacy option use_expandable_footnotes_on_desktop_instead_of_tooltips - should not be set in modern footnotes 1.4.5+ */
       || (
-        !isset($modern_footnotes_options['desktop_footnote_behavior'] && isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']
+        !isset($modern_footnotes_options['desktop_footnote_behavior']) && isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']
       )
     ) {
 		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
@@ -188,7 +185,7 @@ function modern_footnotes_func($atts, $content = "") {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
                   '<a href="javascript:void(0)" ' . $additional_attributes . ' title="' . htmlspecialchars(strip_tags($content)) . '">' . $display_number . '</a>' .
                 '</sup>' .
-                '<span class="modern-footnotes-footnote__note" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
+                '<span class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
   }
   
   return $content;
@@ -273,47 +270,76 @@ function modern_footnotes_get_post_scope_id() {
 // When multiple formats are applied, Gutenberg can have multiple <mfn> tags for one footnote, so we'll have to iterate through the text and group sibling tags together (see https://github.com/seankwilliams/modern-footnotes/issues/14)
 function modern_footnotes_replace_mfn_tag_with_shortcode( $content ) {
   $content = str_replace('</mfn>','<mfn>',$content); //using [mfn] instead of [/mfn] is intentional here
-  $contentParts = explode('<mfn>', $content);
-  $contentData = array();
+  $content_parts = explode('<mfn>', $content);
+  $content_data = array();
   //$tagsFromPreviousSegment = array();
   $inFootnote = FALSE;
-  foreach ($contentParts as $c) {
-    $contentData[] = array(
+  foreach ($content_parts as $c) {
+    $content_data[] = array(
       "content" => $c,
       "inFootnote" => $inFootnote
     );    
     $inFootnote = !$inFootnote;
   }
   $wasInFootnote = FALSE;
-  for ($i = 0; $i < count($contentData); $i++) {
+  for ($i = 0; $i < count($content_data); $i++) {
     //if this is only opening tags or only closing tags, place it in the footnote
-    $replacedString = preg_replace("/<\/?\\w+\\s?\\w?.*?>/ms", "", $contentData[$i]['content']);
-    if (strlen($replacedString) === 0 && !$contentData[$i]['inFootnote'] && $wasInFootnote) { // check $wasInFootnote to fix https://github.com/seankwilliams/modern-footnotes/issues/18
-      $contentData[$i]['inFootnote'] = TRUE;
+    $replacedString = preg_replace("/<\/?\\w+\\s?\\w?.*?>/ms", "", $content_data[$i]['content']);
+    if (strlen($replacedString) === 0 && !$content_data[$i]['inFootnote'] && $wasInFootnote) { // check $wasInFootnote to fix https://github.com/seankwilliams/modern-footnotes/issues/18
+      $content_data[$i]['inFootnote'] = TRUE;
     } else {
-      $wasInFootnote = $contentData[$i]['inFootnote'];
+      $wasInFootnote = $content_data[$i]['inFootnote'];
     }
   }
-  $finalContent = '';
+  $final_content = '';
   $inFootnote = FALSE;
-  foreach ($contentData as $cd) {
+  foreach ($content_data as $cd) {
     if ($cd['inFootnote'] && !$inFootnote) {
       $inFootnote = TRUE;
-      $finalContent .= '[mfn]';
+      $final_content .= '[mfn]';
     } else if ($inFootnote && !$cd['inFootnote']) {
       $inFootnote = FALSE;
-      $finalContent .= '[/mfn]';
+      $final_content .= '[/mfn]';
     }
     
-    $finalContent .= $cd['content'];
+    $final_content .= $cd['content'];
   }
   if ($inFootnote) {
-    $finalContent .= '[/mfn]';
+    $final_content .= '[/mfn]';
   }
-  return $finalContent;
+  return $final_content;
 }
 add_filter( 'the_content', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
-add_filter( 'the_excerpt', 'modern_footnotes_replace_mfn_tag_with_shortcode' );
+
+// remove <mfn> HTML tags added by Gutenberg/block editor
+function modern_footnotes_strip_rendered_mfn_tag( $content ) {
+  
+  // we will remove all rendered text from the <mfn> tags
+  global $modern_footnotes_all_posts_data;
+  $scope_id = modern_footnotes_get_post_scope_id();
+  if (empty($modern_footnotes_all_posts_data[$scope_id])) {
+    return $content;
+  }
+  $footnotes_used = array();
+  if (isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
+    foreach ($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] as $f) {
+      $footnotes_used[] = $f;
+    }
+  }
+  $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+
+  foreach ($footnotes_used as $footnote_list) {
+    foreach($footnote_list as $display_number => $footnote_content) {
+      if (!empty($footnote_content)) { //ensure footnote_content is not empty: otherwise, we may be replacing just a number, which is far too common
+        $content = str_replace($display_number . wp_strip_all_tags($footnote_content), '', $content);
+      }
+    }
+  }
+
+  return $content;
+  
+}
+add_filter( 'wp_trim_words', 'modern_footnotes_strip_rendered_mfn_tag'); // use this filter so that <mfn> HTML tags added through gutenberg are removed in wp_trim_excerpt -- in wp_trim_excerpt, strip_shortcodes runs AFTER the_content filters do
  
 
 
@@ -502,7 +528,7 @@ function modern_footnotes_desktop_footnote_behavior_dropdown_callback() {
   );
   
 	$html = '<select id="modern_footnotes_desktop_footnote_behavior" name="modern_footnotes_settings[desktop_footnote_behavior]"> aria-label="%1$s"';
-  for ($options as $key => $value) {
+  foreach ($options as $key => $value) {
     $option_html = '<option value="%s" %s>%s</option>';
     $html .= sprintf($option_html, $key, $selected_value == $key ? 'selected' : '', $value);
   }
