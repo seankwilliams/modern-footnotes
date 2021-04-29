@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.6
+Version:     1.4.7
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.6';
+$modern_footnotes_version = '1.4.7';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -164,6 +164,10 @@ function modern_footnotes_func($atts, $content = "") {
 	
   $content = str_replace('<p>','', $content);
   $content = str_replace('</p>','<br /><br />', $content);
+  
+  if (isset($modern_footnotes_options['use_title_tags_for_footnote_links']) && $modern_footnotes_options['use_title_tags_for_footnote_links']) {
+    $additional_attributes .= ' title="' . str_replace('"','&quot;', strip_tags($content)) . '" ';
+  }
   
   if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
     $modern_footnotes_all_posts_data[$scope_id] = array(
@@ -429,6 +433,20 @@ function modern_footnotes_register_settings() { // whitelist options
 		__FILE__,
 		'modern_footnotes_option_group_section'
 	);
+  
+  add_settings_field(
+		'use_title_tags_for_footnote_links',
+		__('Show browser tooltip on hover', 'modern-footnotes'),
+		'modern_footnotes_checkbox_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'use_title_tags_for_footnote_links',
+      'property_label' => 'Make footnote content appear in web browser\'s native tooltip when hovering over footnote number'
+    )
+	);
+  
+  
   
   add_settings_field(
 		'display_footnotes_at_bottom_of_posts',
