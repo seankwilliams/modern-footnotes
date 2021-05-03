@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 5.7.1
-Stable tag: 1.4.7
+Stable tag: 1.4.8
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -72,6 +72,9 @@ Modern Footnotes is an open source project built with its contributors' free tim
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+
+= 1.4.8 =
+* Fixed a PHP warning in debug mode
 
 = 1.4.7 =
 * Add option to add title attribute with footnote contents to footnote numbers
