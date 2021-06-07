@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.9
+Version:     1.4.10
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.9';
+$modern_footnotes_version = '1.4.10';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -67,7 +67,10 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   
   $content = '';
   if (isset($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) && strlen($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) > 0) {
-    $content .= '<h2>' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h2>';
+    $content .= '<h2 class="' . 
+      ($show_only_when_printing ? 'modern-footnotes-list-heading--show-only-for-print' : '') .
+      ($hide_when_printing ? 'modern-footnotes-list-heading--hide-for-print' : '') 
+      . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h2>';
   }
   if ($for_rss_feed) {
     foreach ($footnotes_used as $footnote_list) {
@@ -560,11 +563,10 @@ function modern_footnotes_textbox_element_callback($args) {
   $property_label = $args['property_label'];
   
   $html = '<input type="text" id="%1$s" name="modern_footnotes_settings[%1$s]" value="%2$s" />';
-  $html .= '<label for="%1$s">' .
-            esc_html__($property_label, 'modern-footnotes', 
-                (isset($modern_footnotes_options[$property_name]) ? $modern_footnotes_options[$property_name] : '') .
+  $html .= ' <label for="%1$s">' .
+            esc_html__($property_label, 'modern-footnotes') .
             '</label>';
-  $html = sprintf($html, $property_name);
+  $html = sprintf($html, $property_name, isset($modern_footnotes_options[$property_name]) ? $modern_footnotes_options[$property_name] : '');
 
   echo $html;
 }
