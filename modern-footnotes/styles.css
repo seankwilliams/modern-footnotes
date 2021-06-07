@@ -59,6 +59,10 @@
 	box-sizing: border-box;
 	z-index: 1;
 }
+.modern-footnotes-footnote__note--tooltip:focus {
+	/* remove focus style for tooltip */
+	outline: none;
+}
 /* default expandable style for mobile */
 .modern-footnotes-footnote__note--expandable {
 	display: block;
@@ -86,14 +90,14 @@
   word-break: normal;
 }
 
-.modern-footnotes-list--show-only-for-print {
+.modern-footnotes-list--show-only-for-print, .modern-footnotes-list-heading--show-only-for-print {
   display: none;
 }
 @media print {
-  .modern-footnotes-list--show-only-for-print {
+  .modern-footnotes-list--show-only-for-print, .modern-footnotes-list-heading--show-only-for-print {
     display: block;
   }
-  .modern-footnotes-list--hide-for-print {
+  .modern-footnotes-list--hide-for-print, .modern-footnotes-list-heading--hide-for-print {
     display: none;
   }
 }
