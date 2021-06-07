@@ -52,7 +52,7 @@ function modern_footnotes_execute_mfn_list_shortcode($content) {
 }
 
 function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide_when_printing = FALSE, $for_rss_feed = FALSE) {
-  global $modern_footnotes_all_posts_data;
+  global $modern_footnotes_all_posts_data, $modern_footnotes_options;
   $scope_id = modern_footnotes_get_post_scope_id();
   if (empty($modern_footnotes_all_posts_data[$scope_id])) {
     return '';
@@ -66,8 +66,10 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
   
   $content = '';
+  if (isset($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) && strlen($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) > 0) {
+    $content .= '<h2>' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h2>';
+  }
   if ($for_rss_feed) {
-    $content .= '<b>Footnotes</b>';
     foreach ($footnotes_used as $footnote_list) {
       foreach($footnote_list as $display_number => $footnote_content) {
         $content .= '<div>';
@@ -79,6 +81,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
     }
   }
   else {
+    
     $content .= '<ul class="modern-footnotes-list ' . 
       ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
       ($hide_when_printing ? 'modern-footnotes-list--hide-for-print' : '') 
@@ -486,6 +489,18 @@ function modern_footnotes_register_settings() { // whitelist options
       'property_label' => 'For post content in RSS feeds, list footnotes at the bottom of posts'
     )
 	);
+
+  add_settings_field(
+    'modern_footnotes_heading_for_footnote_list',
+    __('Heading for footnote list', 'modern-footnotes'),
+    'modern_footnotes_textbox_element_callback',
+    __FILE__,
+    'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'modern_footnotes_heading_for_footnote_list',
+      'property_label' => 'If provided, this text will be displayed above footnote lists'
+    )
+  );
   
 	add_settings_field(
 		'modern_footnotes_custom_css',
@@ -537,6 +552,24 @@ function modern_footnotes_checkbox_element_callback($args) {
 
 	echo $html;
 }
+
+function modern_footnotes_textbox_element_callback($args) {
+  global $modern_footnotes_options;
+  
+  $property_name = $args['property_name'];
+  $property_label = $args['property_label'];
+  
+  $html = '<input type="text" id="%1$s" name="modern_footnotes_settings[%1$s]" value="%2$s" />';
+  $html .= '<label for="%1$s">' .
+            esc_html__($property_label, 'modern-footnotes', 
+                (isset($modern_footnotes_options[$property_name]) ? $modern_footnotes_options[$property_name] : '') .
+            '</label>';
+  $html = sprintf($html, $property_name);
+
+  echo $html;
+}
+
+
 
 function modern_footnotes_desktop_footnote_behavior_dropdown_callback() {
   global $modern_footnotes_options;

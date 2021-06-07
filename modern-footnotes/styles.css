@@ -59,6 +59,10 @@
 	box-sizing: border-box;
 	z-index: 1;
 }
+.modern-footnotes-footnote__note--tooltip:focus {
+	/* remove focus style for tooltip */
+	outline: none;
+}
 /* default expandable style for mobile */
 .modern-footnotes-footnote__note--expandable {
 	display: block;
