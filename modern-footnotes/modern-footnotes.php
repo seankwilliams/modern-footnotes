@@ -67,10 +67,10 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   
   $content = '';
   if (isset($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) && strlen($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) > 0) {
-    $content .= '<h2 class="' . 
+    $content .= '<h3 class="modern-footnotes-list-heading ' . 
       ($show_only_when_printing ? 'modern-footnotes-list-heading--show-only-for-print' : '') .
       ($hide_when_printing ? 'modern-footnotes-list-heading--hide-for-print' : '') 
-      . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h2>';
+      . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h3>';
   }
   if ($for_rss_feed) {
     foreach ($footnotes_used as $footnote_list) {
