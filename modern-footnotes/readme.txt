@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 5.8
-Stable tag: 1.4.10
+Stable tag: 1.4.11
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -72,6 +72,9 @@ Modern Footnotes is an open source project built with its contributors' free tim
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+
+= 1.4.11 =
+* Accessibility fix: set aria-describedby and gave footnote links a role of "button"
 
 = 1.4.10 = 
 * Remove outline style from tooltip when users are focused on it
