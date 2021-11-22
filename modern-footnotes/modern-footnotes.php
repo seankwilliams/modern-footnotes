@@ -136,6 +136,7 @@ function modern_footnotes_func($atts, $content = "") {
     $additional_classes .= 'modern-footnotes-footnote--hover-on-desktop ';
   }
 
+  // If additional space-seperated classes are provided to an individual footnote using [mfn class="some-class"], they are added to the footnote
   if (isset($atts['class'])) {
     $additional_classes .= $atts['class'].' ';
   }
