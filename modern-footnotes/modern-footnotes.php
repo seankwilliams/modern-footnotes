@@ -131,9 +131,13 @@ function modern_footnotes_func($atts, $content = "") {
         !isset($modern_footnotes_options['desktop_footnote_behavior']) && isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']
       )
     ) {
-		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
+		$additional_classes .= 'modern-footnotes-footnote--expands-on-desktop ';
 	} else if (isset($modern_footnotes_options['desktop_footnote_behavior']) && $modern_footnotes_options['desktop_footnote_behavior'] == 'tooltip_hover') {
-    $additional_classes = 'modern-footnotes-footnote--hover-on-desktop';
+    $additional_classes .= 'modern-footnotes-footnote--hover-on-desktop ';
+  }
+
+  if (isset($atts['class'])) {
+    $additional_classes .= $atts['class'].' ';
   }
   
   // $scope_id will have a unique value for each post on the page -- this helps handle when a post is 
