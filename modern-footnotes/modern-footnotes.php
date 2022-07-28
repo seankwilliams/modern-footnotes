@@ -703,6 +703,12 @@ function modern_footnotes_add_container_plugin($plugin_array) {
 // Gutenberg / Block Editor 
 //
 function modern_footnotes_block_editor_button() {
+
+    $currentScreen = get_current_screen();
+    if ($currentScreen->id === "widgets") {
+      return;
+    }
+
     global $modern_footnotes_version;
     wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
