@@ -706,7 +706,7 @@ function modern_footnotes_block_editor_button() {
     global $modern_footnotes_version;
     wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
-        array( 'wp-rich-text', 'wp-element', 'wp-editor', 'wp-i18n' ),
+        array( 'wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-i18n' ),
         $modern_footnotes_version
     );
     wp_set_script_translations('modern_footnotes_block_editor_js','modern-footnotes');
