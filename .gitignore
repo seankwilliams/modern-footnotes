@@ -46,5 +46,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Files related to specific code editors
+*.sublime-project
+*.sublime-workspace
+
 # zip of plugin
 modern-footnotes.zip
