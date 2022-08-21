@@ -131,9 +131,14 @@ function modern_footnotes_func($atts, $content = "") {
         !isset($modern_footnotes_options['desktop_footnote_behavior']) && isset($modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']) && $modern_footnotes_options['use_expandable_footnotes_on_desktop_instead_of_tooltips']
       )
     ) {
-		$additional_classes = 'modern-footnotes-footnote--expands-on-desktop';
+		$additional_classes .= 'modern-footnotes-footnote--expands-on-desktop ';
 	} else if (isset($modern_footnotes_options['desktop_footnote_behavior']) && $modern_footnotes_options['desktop_footnote_behavior'] == 'tooltip_hover') {
-    $additional_classes = 'modern-footnotes-footnote--hover-on-desktop';
+    $additional_classes .= 'modern-footnotes-footnote--hover-on-desktop ';
+  }
+
+  // If additional space-seperated classes are provided to an individual footnote using [mfn class="some-class"], they are added to the footnote
+  if (isset($atts['class'])) {
+    $additional_classes .= $atts['class'].' ';
   }
   
   // $scope_id will have a unique value for each post on the page -- this helps handle when a post is 
@@ -703,10 +708,16 @@ function modern_footnotes_add_container_plugin($plugin_array) {
 // Gutenberg / Block Editor 
 //
 function modern_footnotes_block_editor_button() {
+
+    $currentScreen = get_current_screen();
+    if ($currentScreen->id === "widgets") {
+      return;
+    }
+
     global $modern_footnotes_version;
     wp_enqueue_script( 'modern_footnotes_block_editor_js',
         plugin_dir_url(__FILE__) . 'modern-footnotes.block-editor.min.js',
-        array( 'wp-rich-text', 'wp-element', 'wp-editor', 'wp-i18n' ),
+        array( 'wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-i18n' ),
         $modern_footnotes_version
     );
     wp_set_script_translations('modern_footnotes_block_editor_js','modern-footnotes');

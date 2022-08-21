@@ -32,6 +32,13 @@ The official GitHub repository is at <a href="https://github.com/seankwilliams/m
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
 
+== Shortcode options ==
+You can modify some behaviours or styles of your footnotes by using the following options within our shortcode.
+[mfn referencenumber=3]This footnote will have the number 3[/mfn] 
+[mfn class='my-pretty-class']This footnote will have 'my-pretty-class' as additional class, allowing for custom styling of individual footnotes.[/mfn]
+[mfn referencereset='true']This footnote will reset the footnote counter and therfore receive 1 as its number. Following footnotes will also receive their number according to this new start.[/mfn]
+
+
 == Frequently Asked Questions ==
 =How do I create a footnote?=
 Use a footnote in your post by using the footnote icon in the WordPress editor or by using the shortcode: [mfn]this will be a footnote[/mfn]
@@ -55,6 +62,9 @@ If you want to customize the styles, you can do so by overriding the following s
 .modern-footnotes-footnote__note – Styling that applies to both mobile and desktop footnotes
 .modern-footnotes-footnote__note--mobile - The styling for a mobile footnote
 .modern-footnotes-footnote__note--desktop - The styling for a desktop footnote
+
+Furthermore, if you want to apply different styles to different footnotes, you can add additional classes to each individual footnote by using the `class` option in the shortcode like this:
+[mfn class="my-pretty-class"] [/mfn]
 
 =Is there support for the Block Editor/Gutenberg Editor?=
 Yes. You can use the Modern Footnotes button in the toolbar of the Block Editor to move the selected text into a footnote. However, if you want to customize the reference numbers output by the plugin, you'll have to type out the shortcode instead.
