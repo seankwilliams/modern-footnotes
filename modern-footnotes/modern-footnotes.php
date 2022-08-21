@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.11
+Version:     1.4.12
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.11';
+$modern_footnotes_version = '1.4.12';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -67,10 +67,11 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   
   $content = '';
   if (isset($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) && strlen($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) > 0) {
-    $content .= '<h3 class="modern-footnotes-list-heading ' . 
+    $tag_name = isset($modern_footnotes_options['modern_footnotes_heading_tag_name_for_footnote_list']) ? $modern_footnotes_options['modern_footnotes_heading_tag_name_for_footnote_list'] : 'h3';
+    $content .= '<' . $tag_name . ' class="modern-footnotes-list-heading ' . 
       ($show_only_when_printing ? 'modern-footnotes-list-heading--show-only-for-print' : '') .
       ($hide_when_printing ? 'modern-footnotes-list-heading--hide-for-print' : '') 
-      . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</h3>';
+      . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</' . $tag_name . '>';
   }
   if ($for_rss_feed) {
     foreach ($footnotes_used as $footnote_list) {
@@ -190,7 +191,9 @@ function modern_footnotes_func($atts, $content = "") {
     );
     $GLOBALS['current_modern_footnotes_post_number']++;
   } else {
-    $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'][] = $display_number;
+    if (is_numeric($display_number)) {
+      $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'][] = $display_number;
+    }
     $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$display_number] = $content;
   }
 
@@ -509,6 +512,14 @@ function modern_footnotes_register_settings() { // whitelist options
       'property_label' => 'If provided, this text will be displayed above footnote lists'
     )
   );
+
+  add_settings_field(
+    'modern_footnotes_heading_tag_name_for_footnote_list',
+    __('Heading tag name for footnote list', 'modern-footnotes'),
+    'modern_footnotes_tag_name_for_footnote_list_dropdown_callback',
+    __FILE__,
+    'modern_footnotes_option_group_section'
+  );
   
 	add_settings_field(
 		'modern_footnotes_custom_css',
@@ -600,6 +611,34 @@ function modern_footnotes_desktop_footnote_behavior_dropdown_callback() {
   
 	echo $html;
 }
+
+function modern_footnotes_tag_name_for_footnote_list_dropdown_callback() {
+  global $modern_footnotes_options;
+  
+  $selected_value = isset($modern_footnotes_options['modern_footnotes_heading_tag_name_for_footnote_list']) ? $modern_footnotes_options['modern_footnotes_heading_tag_name_for_footnote_list'] : 'h3';
+  
+  $options = array(
+    'h2' => __('Heading 2', 'access2'),
+    'h3' => __('Heading 3', 'access3'),
+    'h4' => __('Heading 4', 'access4'),
+    'h5' => __('Heading 5', 'access5'),
+    'h6' => __('Heading 6', 'access6')
+  );
+  
+  $html = '<select id="modern_footnotes_heading_tag_name_for_footnote_list" name="modern_footnotes_settings[modern_footnotes_heading_tag_name_for_footnote_list]"> aria-label="%1$s"';
+  foreach ($options as $key => $value) {
+    $option_html = '<option value="%s" %s>%s</option>';
+    $html .= sprintf($option_html, $key, $selected_value == $key ? 'selected' : '', $value);
+  }
+  $html .= '</select>';
+  
+  $html = sprintf($html, __('Heading tag name for footnote list', 'modern-footnotes'));
+  
+  echo $html;
+}
+
+
+
 
 function modern_footnotes_custom_css_element_callback() {
 	global $modern_footnotes_options;
