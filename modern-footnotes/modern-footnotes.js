@@ -18,25 +18,31 @@
 jQuery(function($) {
   $(document).on('mouseenter', '.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop a', null, function(e) {
     if ($(window).width() >= 768) {
-      window.modernFootnotesActivelyHovering = true;
+      window.modernFootnotesActivelyHovering = true; 
       window.modernFootnotesOpenedFootnoteViaHover = true;
-      modern_footnotes_show_tooltip_footnote($(this).parent(), true); //don't transfer focus when hovering - this messes up text highlighting
+      modern_footnotes_show_tooltip_footnote($(this).parent(), true, 'modern-footnotes-footnote__note--opened-by-hover'); //don't transfer focus when hovering - this messes up text highlighting
     }
   });
   $(document).on('mouseenter', '.modern-footnotes-footnote__connector,.modern-footnotes-footnote__note', null, function(e) {
     window.modernFootnotesActivelyHovering = true;
   });
-  $(document).on('mouseleave', '.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop,.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop .modern-footnotes-footnote__connector,.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop .modern-footnotes-footnote__note', null, function(e) {
-    window.modernFootnotesActivelyHovering = false;
+  $(document).on('mouseleave', 
+                 '.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop,' +
+                 '.modern-footnotes-footnote.modern-footnotes-footnote--hover-on-desktop .modern-footnotes-footnote__connector,' +
+                 '.modern-footnotes-footnote__note--opened-by-hover', null, function(e) {
     if (window.modernFootnotesHoverCloseTimeout != null) {
       clearTimeout(window.modernFootnotesHoverCloseTimeout);
     }
-    window.modernFootnotesHoverCloseTimeout = setTimeout(function() {
-      window.modernFootnotesHoverCloseTimeout = null;
-      if (!window.modernFootnotesActivelyHovering) {
-        modern_footnotes_hide_footnotes();
-      }
-    }, 600);
+    if (window.modernFootnotesActivelyHovering) {
+      window.modernFootnotesHoverCloseTimeout = setTimeout(function() {
+        window.modernFootnotesHoverCloseTimeout = null;
+        if (!window.modernFootnotesActivelyHovering) {
+          modern_footnotes_hide_footnotes();
+          $(".modern-footnotes-footnote__note--opened-by-hover").removeClass("modern-footnotes-footnote__note--opened-by-hover");
+        }
+      }, 600);
+    }
+    window.modernFootnotesActivelyHovering = false;
   });
 	$(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
 		e.preventDefault();
@@ -142,7 +148,7 @@ function modern_footnotes_hide_footnotes($footnoteAnchor) {
   }
 }
 
-function modern_footnotes_show_tooltip_footnote($footnoteElement, doNotTransferFocus) {
+function modern_footnotes_show_tooltip_footnote($footnoteElement, doNotTransferFocus, additionalClass) {
   //tooltip style
   modern_footnotes_hide_footnotes(); //only allow one footnote to be open at a time on desktop
   $footnoteElement.toggleClass('modern-footnotes-footnote--selected');
@@ -152,6 +158,9 @@ function modern_footnotes_show_tooltip_footnote($footnoteElement, doNotTransferF
     .show()
     .addClass('modern-footnotes-footnote__note--tooltip')
     .removeClass('modern-footnotes-footnote__note--expandable');
+  if (additionalClass) {
+    $footnoteContent.addClass(additionalClass);
+  }
   if (!doNotTransferFocus) {
     $footnoteContent.focus();
   }
