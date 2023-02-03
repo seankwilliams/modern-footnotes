@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.13
+Version:     1.4.14
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.13';
+$modern_footnotes_version = '1.4.14';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -379,9 +379,11 @@ function modern_footnotes_register_scripts_styles() {
   // will have to check when rendering the shortcodes to ensure that the scripts/styles are enqueued
   if (is_a( $post, 'WP_Post' )) {
     $has_shortcode = FALSE;
-    foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
-      if (has_shortcode($post->post_content, $modern_footnote_shortcode)) {
-        $has_shortcode = TRUE;
+    if (isset($modern_footnotes_shortcodes)) { // attempt to resolve https://wordpress.org/support/topic/error-causes-php-process-hang/ - I am not really clear how this variable could be null here, though.
+      foreach ($modern_footnotes_shortcodes as $modern_footnote_shortcode) {
+        if (has_shortcode($post->post_content, $modern_footnote_shortcode)) {
+          $has_shortcode = TRUE;
+        }
       }
     }
     if (has_shortcode($post->post_content, 'mfn_list')) {
