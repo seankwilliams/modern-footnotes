@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.14
+Version:     1.4.15
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.14';
+$modern_footnotes_version = '1.4.15';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -197,13 +197,16 @@ function modern_footnotes_func($atts, $content = "") {
     $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$display_number] = $content;
   }
 
+  //create a unique ID to use in HTML
+  $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', $display_number);
+
   if (isset($atts['for_rss_feed']) && $atts['for_rss_feed']) {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . $display_number . '</sup>'; // only display the superscript for RSS feeds
   } else {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
-                  '<a href="javascript:void(0)" ' . $additional_attributes . ' role="button" aria-pressed="false" aria-describedby="mfn-content-' . $scope_id . '">' . $display_number . '</a>' .
+                  '<a href="javascript:void(0)" ' . $additional_attributes . ' role="button" aria-pressed="false" aria-describedby="' . $content_id . '">' . $display_number . '</a>' .
                 '</sup>' .
-                '<span id="mfn-content-' . $scope_id . '" role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
+                '<span id="' . $content_id . '" role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
   }
   
   return $content;

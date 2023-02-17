@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 6.1.1
-Stable tag: 1.4.14
+Stable tag: 1.4.15
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -82,6 +82,9 @@ Modern Footnotes is an open source project built with its contributors' free tim
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+
+= 1.4.15 =
+* Fix for duplicate HTML ids
 
 = 1.4.14 =
 * Minor fix for a PHP warning where foreach was attempting to access a null object
