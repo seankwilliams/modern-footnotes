@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.15
+Version:     1.4.16
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.15';
+$modern_footnotes_version = '1.4.16';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -587,7 +587,7 @@ function modern_footnotes_textbox_element_callback($args) {
   $html .= ' <label for="%1$s">' .
             esc_html__($property_label, 'modern-footnotes') .
             '</label>';
-  $html = sprintf($html, $property_name, isset($modern_footnotes_options[$property_name]) ? $modern_footnotes_options[$property_name] : '');
+  $html = sprintf($html, $property_name, isset($modern_footnotes_options[$property_name]) ? esc_attr($modern_footnotes_options[$property_name]) : '');
 
   echo $html;
 }
@@ -608,7 +608,7 @@ function modern_footnotes_desktop_footnote_behavior_dropdown_callback() {
 	$html = '<select id="modern_footnotes_desktop_footnote_behavior" name="modern_footnotes_settings[desktop_footnote_behavior]"> aria-label="%1$s"';
   foreach ($options as $key => $value) {
     $option_html = '<option value="%s" %s>%s</option>';
-    $html .= sprintf($option_html, $key, $selected_value == $key ? 'selected' : '', $value);
+    $html .= sprintf($option_html, esc_attr($key), $selected_value == $key ? 'selected' : '', esc_html($value));
   }
   $html .= '</select>';
   
@@ -633,7 +633,7 @@ function modern_footnotes_tag_name_for_footnote_list_dropdown_callback() {
   $html = '<select id="modern_footnotes_heading_tag_name_for_footnote_list" name="modern_footnotes_settings[modern_footnotes_heading_tag_name_for_footnote_list]"> aria-label="%1$s"';
   foreach ($options as $key => $value) {
     $option_html = '<option value="%s" %s>%s</option>';
-    $html .= sprintf($option_html, $key, $selected_value == $key ? 'selected' : '', $value);
+    $html .= sprintf($option_html, esc_attr($key), $selected_value == $key ? 'selected' : '', esc_html($value));
   }
   $html .= '</select>';
   
@@ -648,7 +648,7 @@ function modern_footnotes_tag_name_for_footnote_list_dropdown_callback() {
 function modern_footnotes_custom_css_element_callback() {
 	global $modern_footnotes_options;
 	
-	$html = '<textarea id="modern_footnotes_custom_css" name="modern_footnotes_settings[modern_footnotes_custom_css]" style="max-width:100%;width:400px;height:200px">' . (isset($modern_footnotes_options['modern_footnotes_custom_css']) ? $modern_footnotes_options['modern_footnotes_custom_css'] : '') . '</textarea>';
+	$html = '<textarea id="modern_footnotes_custom_css" name="modern_footnotes_settings[modern_footnotes_custom_css]" style="max-width:100%;width:400px;height:200px">' . (isset($modern_footnotes_options['modern_footnotes_custom_css']) ? esc_textarea($modern_footnotes_options['modern_footnotes_custom_css']) : '') . '</textarea>';
 	$html .= '<label for="modern_footnotes_custom_css">' .
             esc_html__('Enter any custom CSS for the plugin, without any <style> tags.', 'modern-footnotes') .
             '</label>';
