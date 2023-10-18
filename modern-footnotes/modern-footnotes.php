@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.16
+Version:     1.4.17
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.16';
+$modern_footnotes_version = '1.4.17';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -139,7 +139,7 @@ function modern_footnotes_func($atts, $content = "") {
 
   // If additional space-seperated classes are provided to an individual footnote using [mfn class="some-class"], they are added to the footnote
   if (isset($atts['class'])) {
-    $additional_classes .= $atts['class'].' ';
+    $additional_classes .= esc_attr($atts['class']).' ';
   }
   
   // $scope_id will have a unique value for each post on the page -- this helps handle when a post is 
@@ -165,7 +165,7 @@ function modern_footnotes_func($atts, $content = "") {
   
 	if (isset($atts['referencenumber'])) {
 		$display_number = $atts['referencenumber'];
-		$additional_attributes = 'refnum="' . $display_number . '"';
+		$additional_attributes = 'refnum="' . esc_attr($display_number) . '"';
 	} else if (!isset($modern_footnotes_all_posts_data[$scope_id]) || count($modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers']) == 0) {
 		$display_number = 1;
 	} else {
@@ -198,12 +198,12 @@ function modern_footnotes_func($atts, $content = "") {
   }
 
   //create a unique ID to use in HTML
-  $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', $display_number);
+  $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', esc_attr($display_number));
 
   if (isset($atts['for_rss_feed']) && $atts['for_rss_feed']) {
-    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . $display_number . '</sup>'; // only display the superscript for RSS feeds
+    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . esc_html($display_number) . '</sup>'; // only display the superscript for RSS feeds
   } else {
-    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", $display_number) . '" data-mfn-post-scope="' . $scope_id . '">' .
+    $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '" data-mfn="' . str_replace('"',"\\\"", esc_attr($display_number)) . '" data-mfn-post-scope="' . $scope_id . '">' .
                   '<a href="javascript:void(0)" ' . $additional_attributes . ' role="button" aria-pressed="false" aria-describedby="' . $content_id . '">' . $display_number . '</a>' .
                 '</sup>' .
                 '<span id="' . $content_id . '" role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . $content . '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
