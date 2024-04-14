@@ -84,6 +84,9 @@ Modern Footnotes is an open source project built with its contributors' free tim
 == Changelog ==
 
 = 1.4.19 =
+* Fix compatibility issue with Relevanssi
+
+= 1.4.18 =
 * Fix PHP warning when $GLOBALS['post'] was not a WP_POST instance
 
 = 1.4.17 =
