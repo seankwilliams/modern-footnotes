@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Modern Footnotes
+Plugin Name: Modern Footnotes (ISU customized)
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
-Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
+Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn]. 
 Version:     1.4.20
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
@@ -293,7 +293,14 @@ function modern_footnotes_get_post_scope_id() {
       $global_post_id = $global_post;
     }
     if (isset($GLOBALS['modern_footnotes_active_query'])) {
-      return spl_object_hash($GLOBALS['modern_footnotes_active_query']) . '_' . $global_post_id;
+      $active_query = $GLOBALS['modern_footnotes_active_query'];
+      if (is_object($active_query) && property_exists($active_query, 'query_vars')) {
+        // Use serialize+hash instead of spl_object_hash for stable IDs across server restarts
+        $query_id = md5(serialize($active_query->query_vars));
+      } else {
+        $query_id = 'noquery';
+      }
+      return $query_id . '_' . $global_post_id;
     } else {
       return 'post_' . $global_post_id;
     }
