@@ -4,7 +4,7 @@ Plugin Name: Modern Footnotes
 Plugin URI:  http://prismtechstudios.com/modern-footnotes
 Text Domain: modern-footnotes
 Description: Add inline footnotes to your post via the footnote icon on the toolbar for editing posts and pages. Or, use the [mfn] or [modern_footnote] shortcodes [mfn]like this[/mfn].
-Version:     1.4.20
+Version:     1.4.21
 Author:      Prism Tech Studios
 Author URI:  http://prismtechstudios.com/
 License:     GPL2
@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 //don't let users call this file directly
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$modern_footnotes_version = '1.4.20';
+$modern_footnotes_version = '1.4.21';
 
 $modern_footnotes_options = get_option('modern_footnotes_settings');
 
@@ -780,6 +780,29 @@ function modern_footnotes_block_editor_button() {
     
 }
 add_action( 'enqueue_block_editor_assets', 'modern_footnotes_block_editor_button' );
+
+// Load footnote *content* styles into the iframed editor canvas (WP 6.3+/7.x).
+// enqueue_block_editor_assets only reaches the admin page (outside the iframe),
+// so content rules (mfn highlight, "footnote" label) need enqueue_block_assets.
+function modern_footnotes_block_editor_content_styles() {
+    // enqueue_block_assets fires on BOTH the front end and the editor. These are
+    // editor-only authoring hints (the grey `mfn` highlight and the "footnote" label)
+    // that help writers see footnotes while composing. On the published page footnotes
+    // get their real appearance from the plugin's own styles.css / styles.min.css
+    // (enqueued via wp_enqueue_scripts), where the grey editor highlight would look
+    // wrong, so we bail out on the front end and only inject into the editor iframe.
+    if ( ! is_admin() ) {
+        return;
+    }
+    global $modern_footnotes_version;
+    wp_enqueue_style(
+        'modern_footnotes_block_editor_css',
+        plugin_dir_url( __FILE__ ) . 'styles.block-editor-button.min.css',
+        array(),
+        $modern_footnotes_version
+    );
+}
+add_action( 'enqueue_block_assets', 'modern_footnotes_block_editor_content_styles' );
 //
 // End Gutenberg / Block Editor
 //

@@ -3,7 +3,7 @@ Contributors: Sean Williams
 Tags: footnotes, citations, inline footnotes, inline citations, mobile-friendly citations, mobile-friendly footnotes
 Requires at least: 4.6
 Tested up to: 7.0.2
-Stable tag: 1.4.20
+Stable tag: 1.4.21
 License: GNU General Public License v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -82,6 +82,9 @@ Modern Footnotes is an open source project built with its contributors' free tim
 4. http://prismtechstudios.com/modern-footnotes/modern-footnotes-4.png
 
 == Changelog ==
+
+= 1.4.21 =
+* Formatting fix for block editor in WordPress 7.0.
 
 = 1.4.20 =
 * Security fix for XSS issue. Thanks to muhammad yudha and Patchstack for identifying the issue.
