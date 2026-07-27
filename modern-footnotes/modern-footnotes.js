@@ -1,4 +1,4 @@
-/* Copyright 2017-2021 Sean Williams
+/* Copyright 2017-2025 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -197,3 +197,26 @@ function modern_footnotes_show_tooltip_footnote($footnoteElement, doNotTransferF
     left: (superscriptPosition.left + superscriptWidth / 2) + 'px'
   });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('click', function(e) {
+	// Handling click on the ⌄ symbol in the tooltip
+    if (e.target.classList.contains('modern-footnotes-scroll-to-reference')) {
+      e.preventDefault();
+      const targetId = e.target.getAttribute('href').substring(1); 
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+	// Handling click on the ^ symbol in the reference list
+    if (e.target.classList.contains('modern-footnotes-scroll-to-footnote')) {
+      e.preventDefault();
+      const targetId = e.target.getAttribute('href').substring(1); 
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
