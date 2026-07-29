@@ -213,18 +213,34 @@ document.addEventListener('DOMContentLoaded', function() {
       // This allows websites to set scroll-margin-top in their own custom CSS and prevent us
       // from overriding it.
       if (getComputedStyle(targetElement)['scroll-margin-top'] == '0px' || targetElement.classList.contains(scrollMarginTopClass)) {
-        var fixedAndStickyElements = Array
+        // Measure the combined height of fixed/sticky elements stacked at the top
+        // of the viewport. Multiple can stack — e.g. the WordPress admin bar with a
+        // theme's fixed menu directly beneath it — so we walk the stack from the top
+        // rather than trusting a single element's height.
+        var topStackBottom = Array
             .from(document.querySelectorAll('*'))
             .filter(el => getComputedStyle(el).position === 'fixed' || getComputedStyle(el).position === 'sticky')
-            .filter(el => el.offsetTop == 0);
-        if (fixedAndStickyElements.length > 0) {
-          if (fixedAndStickyElements[0].offsetHeight > 0) {
-            targetElement.style.scrollMarginTop = fixedAndStickyElements[0].offsetHeight + 'px';
-            targetElement.classList.add(scrollMarginTopClass);
-          } else {
-            targetElement.style.scrollMarginTop = '0px';
-            targetElement.classList.remove(scrollMarginTopClass)
+            .map(el => el.getBoundingClientRect())
+            .filter(rect => rect.height > 0)
+            .sort((a, b) => a.top - b.top)
+            .reduce((bottom, rect) => (rect.top <= bottom + 1 ? Math.max(bottom, rect.bottom) : bottom), 0);
+        // The WordPress admin bar reserves its own space via `html { margin-top }`,
+        // so its height is already offset in the scroll container. Subtract it back
+        // out so we don't double-count it and leave a gap. Skip it on mobile, where
+        // the admin bar is position:absolute and never part of the stack.
+        var adminBar = document.getElementById('wpadminbar');
+        if (adminBar) {
+          var adminBarPosition = getComputedStyle(adminBar).position;
+          if (adminBarPosition === 'fixed' || adminBarPosition === 'sticky') {
+            topStackBottom = Math.max(0, topStackBottom - adminBar.getBoundingClientRect().height);
           }
+        }
+        if (topStackBottom > 0) {
+          targetElement.style.scrollMarginTop = topStackBottom + 'px';
+          targetElement.classList.add(scrollMarginTopClass);
+        } else {
+          targetElement.style.scrollMarginTop = '0px';
+          targetElement.classList.remove(scrollMarginTopClass);
         }
       }
 

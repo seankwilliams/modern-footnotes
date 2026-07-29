@@ -36,12 +36,6 @@ if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_
   update_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated', 1); // this variable is so the default value doesn't get re-migrated
   update_option('modern_footnotes_settings', $modern_footnotes_options);
 }
-if (get_option('modern_footnotes_show_jump_to_list_link_in_footnotes_has_been_set') === FALSE && 
-    !isset($modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'])) {
-  $modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'] = 0;
-  update_option('modern_footnotes_show_jump_to_list_link_in_footnotes_has_been_set', 1); // this variable is so the default value doesn't get reset
-  update_option('modern_footnotes_settings', $modern_footnotes_options);
-}
 
 //will contain an entry for each unique post displayed on the page. Each post will have three values:
 // modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
@@ -204,6 +198,7 @@ function modern_footnotes_func($atts, $content = "") {
   }
 
   $display_footnotes_at_bottom_of_posts = isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts'];
+  $show_jump_to_list_link = isset($modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes']) && $modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'];
 
   //create a unique ID to use in HTML
   $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', esc_attr($display_number));
@@ -215,11 +210,11 @@ function modern_footnotes_func($atts, $content = "") {
                      'class="modern-footnotes-footnote ' . $additional_classes . '" ' .
                      'data-mfn="' . str_replace('"',"\\\"", esc_attr($display_number)) . '" ' .
                      'data-mfn-post-scope="' . $scope_id . '">' .
-                  '<a href="javascript:void(0)" ' . $additional_attributes . ' role="button" aria-pressed="false" aria-describedby="' . $content_id . '">' . $display_number . '</a>' .
+                  '<a href="javascript:void(0)" ' . $additional_attributes . ' role="button" aria-pressed="false" aria-describedby="' . $content_id . '">' . esc_html($display_number) . '</a>' .
                 '</sup>' .
-                '<span role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . 
+                '<span role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", esc_attr($display_number)) . '">' .
                   $content . 
-                  ($display_footnotes_at_bottom_of_posts ?
+                  ($display_footnotes_at_bottom_of_posts && $show_jump_to_list_link ?
                     '<a href="#footnote-' . esc_attr($scope_id) . '-' . esc_attr($display_number) . '" class="modern-footnotes-scroll-to-reference" aria-label="Jump to footnote ' . esc_attr($display_number) . '">↓</a>' :
                     '')
                   . 
@@ -452,6 +447,12 @@ function modern_footnotes_options() {
 	}
 	echo '<div class="wrap">';
 	echo '<h1>' . esc_html__('Modern Footnotes Settings','modern-footnotes') . '</h1>';
+	// Indent sub-settings (e.g. options that only apply when a parent option is on)
+	// so they read as nested beneath the setting above them.
+	echo '<style>
+		.form-table tr.mfn-sub-setting th { font-weight: 400; padding-left: 30px; }
+		.form-table tr.mfn-sub-setting td { padding-left: 30px; }
+	</style>';
 	echo '<form method="post" action="options.php">';
 	settings_fields('modern_footnotes_settings');
 	do_settings_sections(__FILE__);
@@ -505,6 +506,18 @@ function modern_footnotes_register_settings() { // whitelist options
     array(
       'property_name' => 'display_footnotes_at_bottom_of_posts',
       'property_label' => 'Display footnote list at bottom of posts'
+    )
+	);
+  add_settings_field(
+		'modern_footnotes_show_jump_to_list_link_in_footnotes',
+		__('Add jump-to-list link in footnotes', 'modern-footnotes'),
+		'modern_footnotes_checkbox_element_callback',
+		__FILE__,
+		'modern_footnotes_option_group_section',
+    array(
+      'property_name' => 'modern_footnotes_show_jump_to_list_link_in_footnotes',
+      'property_label' => 'Add a down-arrow link in each footnote that jumps to its entry in the list at the bottom of the post',
+      'class' => 'mfn-sub-setting'
     )
 	);
   add_settings_field(
