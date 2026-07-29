@@ -36,6 +36,12 @@ if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_
   update_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_tooltips_has_been_migrated', 1); // this variable is so the default value doesn't get re-migrated
   update_option('modern_footnotes_settings', $modern_footnotes_options);
 }
+if (get_option('modern_footnotes_show_jump_to_list_link_in_footnotes_has_been_set') === FALSE && 
+    !isset($modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'])) {
+  $modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'] = 0;
+  update_option('modern_footnotes_show_jump_to_list_link_in_footnotes_has_been_set', 1); // this variable is so the default value doesn't get reset
+  update_option('modern_footnotes_settings', $modern_footnotes_options);
+}
 
 //will contain an entry for each unique post displayed on the page. Each post will have three values:
 // modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
@@ -91,11 +97,11 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
       . '">';
     foreach ($footnotes_used as $footnote_list) {
       foreach($footnote_list as $display_number => $footnote_content) {
-      $content .= '<li id="footnote-' . esc_attr($display_number) . '">';
+      $content .= '<li id="footnote-' . esc_attr($scope_id) . '-' . esc_attr($display_number) . '">';
       $content .= '<span>' . $display_number . '</span>';
       $content .= '<div>';
       $content .= $footnote_content;
-      $content .= ' <a href="#mfn-content-' . esc_attr($scope_id) . '-' . esc_attr($display_number) . '" class="modern-footnotes-scroll-to-footnote">^</a>'; 
+      $content .= ' <a href="#mfn-content-' . esc_attr($scope_id) . '-' . esc_attr($display_number) . '" class="modern-footnotes-scroll-to-footnote" aria-label="Back to reference ' . esc_attr($display_number) . ' in text">↩︎</a>'; 
       $content .= '</div>';
       $content .= '</li>';
       }
@@ -197,6 +203,8 @@ function modern_footnotes_func($atts, $content = "") {
     $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$display_number] = $content;
   }
 
+  $display_footnotes_at_bottom_of_posts = isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts'];
+
   //create a unique ID to use in HTML
   $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', esc_attr($display_number));
 
@@ -211,7 +219,10 @@ function modern_footnotes_func($atts, $content = "") {
                 '</sup>' .
                 '<span role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", $display_number) . '">' . 
                   $content . 
-                  '<a href="#footnote-' . esc_attr($display_number) . '" class="modern-footnotes-scroll-to-reference">⌄</a>' . 
+                  ($display_footnotes_at_bottom_of_posts ?
+                    '<a href="#footnote-' . esc_attr($scope_id) . '-' . esc_attr($display_number) . '" class="modern-footnotes-scroll-to-reference" aria-label="Jump to footnote ' . esc_attr($display_number) . '">↓</a>' :
+                    '')
+                  . 
                 '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
   }
 

@@ -1,4 +1,4 @@
-/* Copyright 2017-2025 Sean Williams
+/* Copyright 2017-2026 Sean Williams
     This file is part of Modern Footnotes.
 
     This program is free software; you can redistribute it and/or modify
@@ -44,53 +44,53 @@ jQuery(function($) {
     }
     window.modernFootnotesActivelyHovering = false;
   });
-	$(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
-		var $footnoteContent = $(this).parent().nextAll(next).eq(0);
-		if ($footnoteContent.is(":hidden")) {
-			if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
+    $(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
+        var $footnoteContent = $(this).parent().nextAll(next).eq(0);
+        if ($footnoteContent.is(":hidden")) {
+            if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
         modern_footnotes_show_tooltip_footnote($(this).parent());
         $(this).attr("aria-pressed","true");
-			} else if ($(window).width() < 768 || $(this).parent().is(":not(.modern-footnotes-footnote--hover-on-desktop)")) {
-				//expandable style
+            } else if ($(window).width() < 768 || $(this).parent().is(":not(.modern-footnotes-footnote--hover-on-desktop)")) {
+                //expandable style
         $(this).attr("aria-pressed","true");
-				$footnoteContent
-					.removeClass('modern-footnotes-footnote__note--tooltip')
-					.addClass('modern-footnotes-footnote__note--expandable')
-					.css('display', 'block');
-				$(this).data('unopenedContent', $(this).html());
-				$(this).html('x');
-			} else {
+                $footnoteContent
+                    .removeClass('modern-footnotes-footnote__note--tooltip')
+                    .addClass('modern-footnotes-footnote__note--expandable')
+                    .css('display', 'block');
+                $(this).data('unopenedContent', $(this).html());
+                $(this).html('x');
+            } else {
         //do nothing when user is in desktop + .modern-footnotes-footnote--hover-on-desktop is present (behavior is handled by hovering, in that case
       }
-		} else {
-			modern_footnotes_hide_footnotes($(this));
-		}
-	}).on('click', '.modern-footnotes-footnote__note', null, function(e) {
-		e.stopPropagation();
-	}).on('click', function() {
+        } else {
+            modern_footnotes_hide_footnotes($(this));
+        }
+    }).on('click', '.modern-footnotes-footnote__note', null, function(e) {
+        e.stopPropagation();
+    }).on('click', function() {
     //when clicking the body, close tooltip-style footnotes
     if ($(window).width() >= 768 && $(".modern-footnotes-footnote--expands-on-desktop").length == 0) {
       modern_footnotes_hide_footnotes(); 
     }
-	});
+    });
 
-	//hide all footnotes on window resize or clicking anywhere but on the footnote link
-	$(window).resize(function() {
-		modern_footnotes_hide_footnotes();
-	});
+    //hide all footnotes on window resize or clicking anywhere but on the footnote link
+    $(window).resize(function() {
+        modern_footnotes_hide_footnotes();
+    });
 
-	//some plugins, like TablePress, cause shortcodes to be rendered
-	//in a different order than they appear in the HTML. This can cause
-	//the numbering to be out of order. I couldn't find a way to deal
-	//with this on the PHP side (as of 1/27/18), so this JavaScript fix
-	//will correct the numbering if it's not sequential.
-	var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
-	var usedReferenceNumbers = {};
-	if ($footnotesAnchorLinks.length > 1) {
-		$footnotesAnchorLinks.each(function() {
+    //some plugins, like TablePress, cause shortcodes to be rendered
+    //in a different order than they appear in the HTML. This can cause
+    //the numbering to be out of order. I couldn't find a way to deal
+    //with this on the PHP side (as of 1/27/18), so this JavaScript fix
+    //will correct the numbering if it's not sequential.
+    var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
+    var usedReferenceNumbers = {};
+    if ($footnotesAnchorLinks.length > 1) {
+        $footnotesAnchorLinks.each(function() {
       var postScope = $(this).parent().attr("data-mfn-post-scope");
       if (typeof usedReferenceNumbers[postScope] === 'undefined') {
         usedReferenceNumbers[postScope] = [0];
@@ -98,24 +98,24 @@ jQuery(function($) {
       if ($(this).is("a[data-mfn-reset]")) {
         usedReferenceNumbers[postScope] = [0];
       }
-			if ($(this).is("a[refnum]")) {
-				var manualRefNum = $(this).attr("refnum");
-				if ($(this).html() != manualRefNum) {
-					$(this).html(manualRefNum);
-				}
-				if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
-					usedReferenceNumbers[postScope].push(manualRefNum);
-				}
-			}
-			else {
-				var refNum = Math.max.apply(null, usedReferenceNumbers[postScope]) + 1;
-				if ($(this).html() != refNum) {
-					$(this).html(refNum);
-				}
-				usedReferenceNumbers[postScope].push(refNum);
-			}
-		});
-	}
+            if ($(this).is("a[refnum]")) {
+                var manualRefNum = $(this).attr("refnum");
+                if ($(this).html() != manualRefNum) {
+                    $(this).html(manualRefNum);
+                }
+                if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
+                    usedReferenceNumbers[postScope].push(manualRefNum);
+                }
+            }
+            else {
+                var refNum = Math.max.apply(null, usedReferenceNumbers[postScope]) + 1;
+                if ($(this).html() != refNum) {
+                    $(this).html(refNum);
+                }
+                usedReferenceNumbers[postScope].push(refNum);
+            }
+        });
+    }
 
 });
 
@@ -200,23 +200,50 @@ function modern_footnotes_show_tooltip_footnote($footnoteElement, doNotTransferF
 
 document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', function(e) {
-	// Handling click on the ⌄ symbol in the tooltip
-    if (e.target.classList.contains('modern-footnotes-scroll-to-reference')) {
-      e.preventDefault();
+
+    if (e.target.classList.contains('modern-footnotes-scroll-to-reference') ||
+        e.target.classList.contains('modern-footnotes-scroll-to-footnote')) {
+
       const targetId = e.target.getAttribute('href').substring(1); 
       const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      //if theme uses a fixed menu, calculate the offset
+      var scrollMarginTopClass = "modern-footnotes-custom-scroll-magin-top"; // this class is used to "remember" if an element has a calculated scroll-margin-top value, so we can recalculate if needed (like if screen size changes)
+      // If the element already has a scroll-margin-top value, don't calculate a value for it.
+      // This allows websites to set scroll-margin-top in their own custom CSS and prevent us
+      // from overriding it.
+      if (getComputedStyle(targetElement)['scroll-margin-top'] == '0px' || targetElement.classList.contains(scrollMarginTopClass)) {
+        var fixedAndStickyElements = Array
+            .from(document.querySelectorAll('*'))
+            .filter(el => getComputedStyle(el).position === 'fixed' || getComputedStyle(el).position === 'sticky')
+            .filter(el => el.offsetTop == 0);
+        if (fixedAndStickyElements.length > 0) {
+          if (fixedAndStickyElements[0].offsetHeight > 0) {
+            targetElement.style.scrollMarginTop = fixedAndStickyElements[0].offsetHeight + 'px';
+            targetElement.classList.add(scrollMarginTopClass);
+          } else {
+            targetElement.style.scrollMarginTop = '0px';
+            targetElement.classList.remove(scrollMarginTopClass)
+          }
+        }
       }
-    }
-	// Handling click on the ^ symbol in the reference list
-    if (e.target.classList.contains('modern-footnotes-scroll-to-footnote')) {
+
+
+      // Handling click on the ↓ symbol in the tooltip or ↩︎ symbol in footnote list
       e.preventDefault();
-      const targetId = e.target.getAttribute('href').substring(1); 
-      const targetElement = document.getElementById(targetId);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        //close tooltip
+        if (e.target.classList.contains('modern-footnotes-scroll-to-reference')) {
+          if (window.innerWidth >= 768 && $(".modern-footnotes-footnote--expands-on-desktop").length == 0) {
+            modern_footnotes_hide_footnotes(); 
+          }
+        }
       }
+
     }
+    
+    
   });
 });
