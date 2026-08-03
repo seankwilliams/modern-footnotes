@@ -86,6 +86,7 @@ Modern Footnotes is an open source project built with its contributors' free tim
 = 1.5.0 =
 * Add links from footnote list up to footnote location
 * Add links from footnote tooltip down to footnote location
+* Minor internal rewrite of the logic when multiple footnotes share the same reference label.
 
 = 1.4.21 =
 * Formatting fix for block editor in WordPress 7.0.
