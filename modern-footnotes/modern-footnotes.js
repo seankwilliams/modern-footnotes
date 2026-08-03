@@ -65,32 +65,32 @@ jQuery(function($) {
       } else {
         //do nothing when user is in desktop + .modern-footnotes-footnote--hover-on-desktop is present (behavior is handled by hovering, in that case
       }
-        } else {
-            modern_footnotes_hide_footnotes($(this));
-        }
-    }).on('click', '.modern-footnotes-footnote__note', null, function(e) {
-        e.stopPropagation();
-    }).on('click', function() {
+    } else {
+      modern_footnotes_hide_footnotes($(this));
+    }
+  }).on('click', '.modern-footnotes-footnote__note', null, function(e) {
+    e.stopPropagation();
+  }).on('click', function() {
     //when clicking the body, close tooltip-style footnotes
     if ($(window).width() >= 768 && $(".modern-footnotes-footnote--expands-on-desktop").length == 0) {
       modern_footnotes_hide_footnotes(); 
     }
-    });
+  });
 
-    //hide all footnotes on window resize or clicking anywhere but on the footnote link
-    $(window).resize(function() {
-        modern_footnotes_hide_footnotes();
-    });
+  //hide all footnotes on window resize or clicking anywhere but on the footnote link
+  $(window).resize(function() {
+    modern_footnotes_hide_footnotes();
+  });
 
-    //some plugins, like TablePress, cause shortcodes to be rendered
-    //in a different order than they appear in the HTML. This can cause
-    //the numbering to be out of order. I couldn't find a way to deal
-    //with this on the PHP side (as of 1/27/18), so this JavaScript fix
-    //will correct the numbering if it's not sequential.
-    var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
-    var usedReferenceNumbers = {};
-    if ($footnotesAnchorLinks.length > 1) {
-        $footnotesAnchorLinks.each(function() {
+  //some plugins, like TablePress, cause shortcodes to be rendered
+  //in a different order than they appear in the HTML. This can cause
+  //the numbering to be out of order. I couldn't find a way to deal
+  //with this on the PHP side (as of 1/27/18), so this JavaScript fix
+  //will correct the numbering if it's not sequential.
+  var $footnotesAnchorLinks = $("body .modern-footnotes-footnote a");
+  var usedReferenceNumbers = {};
+  if ($footnotesAnchorLinks.length > 1) {
+    $footnotesAnchorLinks.each(function() {
       var postScope = $(this).parent().attr("data-mfn-post-scope");
       if (typeof usedReferenceNumbers[postScope] === 'undefined') {
         usedReferenceNumbers[postScope] = [0];
@@ -98,24 +98,24 @@ jQuery(function($) {
       if ($(this).is("a[data-mfn-reset]")) {
         usedReferenceNumbers[postScope] = [0];
       }
-            if ($(this).is("a[refnum]")) {
-                var manualRefNum = $(this).attr("refnum");
-                if ($(this).html() != manualRefNum) {
-                    $(this).html(manualRefNum);
-                }
-                if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
-                    usedReferenceNumbers[postScope].push(manualRefNum);
-                }
-            }
-            else {
-                var refNum = Math.max.apply(null, usedReferenceNumbers[postScope]) + 1;
-                if ($(this).html() != refNum) {
-                    $(this).html(refNum);
-                }
-                usedReferenceNumbers[postScope].push(refNum);
-            }
-        });
-    }
+      if ($(this).is("a[refnum]")) {
+        var manualRefNum = $(this).attr("refnum");
+        if ($(this).html() != manualRefNum) {
+          $(this).html(manualRefNum);
+        }
+        if (!isNaN(parseFloat(manualRefNum)) && isFinite(manualRefNum)) { //prevent words from being added to this array
+          usedReferenceNumbers[postScope].push(manualRefNum);
+        }
+      }
+      else {
+        var refNum = Math.max.apply(null, usedReferenceNumbers[postScope]) + 1;
+        if ($(this).html() != refNum) {
+          $(this).html(refNum);
+        }
+        usedReferenceNumbers[postScope].push(refNum);
+      }
+    });
+  }
 
 });
 
