@@ -40,8 +40,10 @@ if (get_option('modern_footnotes_use_expandable_footnotes_on_desktop_instead_of_
 //will contain an entry for each unique post displayed on the page. Each post will have three values:
 // modern_footnotes_post_number -- a number identifying the post that can be written out to the HTML
 // used_reference_numbers -- an array of the reference numbers for the footnotes that have been used
-// footnotes -- an array containing each individual footnote, keyed by the reference number
-// footnotes_previously_used -- an array, that if it appears, is an array that could contain multiple previous values of the `footnotes` property. The `footnotes` property is reset when `referencereset` is passed into the mfn shortcode, and previously used footnotes are all stored in this array
+// footnotes -- an array containing each individual footnote, with the following values:
+//                reference_label - the text or number displayed as the superscript for the footnote
+//                content - the text content of the footnote
+//                id - a numberic ID unique to the footnote within the scope of a single post
 $modern_footnotes_all_posts_data = array(); 
 
 $current_modern_footnotes_post_number = 0;
@@ -57,13 +59,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   if (empty($modern_footnotes_all_posts_data[$scope_id])) {
     return '';
   }
-  $footnotes_used = array();
-  if (isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
-    foreach ($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] as $f) {
-      $footnotes_used[] = $f;
-    }
-  }
-  $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+  $footnotes = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
   
   $content = '';
   if (isset($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) && strlen($modern_footnotes_options['modern_footnotes_heading_for_footnote_list']) > 0) {
@@ -74,14 +70,12 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
       . '">' . $modern_footnotes_options['modern_footnotes_heading_for_footnote_list'] . '</' . $tag_name . '>';
   }
   if ($for_rss_feed) {
-    foreach ($footnotes_used as $footnote_list) {
-      foreach($footnote_list as $reference_label => $footnote_content) {
-        $content .= '<div>';
-        $content .= $reference_label;
-        $content .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-        $content .= $footnote_content;
-        $content .= '</div>';
-      }
+    foreach ($footnotes as $footnote) {
+      $content .= '<div>';
+      $content .= $footnote['reference_label'];
+      $content .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+      $content .= $footnote['content'];
+      $content .= '</div>';
     }
   } else {
 
@@ -89,16 +83,14 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
       ($show_only_when_printing ? 'modern-footnotes-list--show-only-for-print' : '') .
       ($hide_when_printing ? 'modern-footnotes-list--hide-for-print' : '') 
       . '">';
-    foreach ($footnotes_used as $footnote_list) {
-      foreach($footnote_list as $reference_label => $footnote_content) {
-      $content .= '<li id="footnote-' . esc_attr($scope_id) . '-' . esc_attr($reference_label) . '">';
-      $content .= '<span>' . $reference_label . '</span>';
+    foreach ($footnotes as $footnote) {
+      $content .= '<li id="footnote-' . esc_attr($scope_id) . '-' . esc_attr($footnote['id']) . '">';
+      $content .= '<span>' . $footnote['reference_label'] . '</span>';
       $content .= '<div>';
-      $content .= $footnote_content;
-      $content .= ' <a href="#mfn-content-' . esc_attr($scope_id) . '-' . esc_attr($reference_label) . '" class="modern-footnotes-scroll-to-footnote" aria-label="Back to reference ' . esc_attr($reference_label) . ' in text">↩︎</a>'; 
+      $content .= $footnote['content'];
+      $content .= ' <a href="#mfn-content-' . esc_attr($scope_id) . '-' . esc_attr($footnote['id']) . '" class="modern-footnotes-scroll-to-footnote" aria-label="Back to reference ' . esc_attr($footnote['reference_label']) . ' in text">↩︎</a>'; 
       $content .= '</div>';
       $content .= '</li>';
-      }
     }
     $content .= '</ul>';
   }
@@ -152,14 +144,6 @@ function modern_footnotes_func($atts, $content = "") {
     if (isset($modern_footnotes_all_posts_data[$scope_id])) {
       $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'] = array();
       $additional_attributes .= ' data-mfn-reset';
-      // store the content of previously used footnotes, in case we are reusing a reference number and we 
-      // are also using a list of footnotes. 
-      if (!isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
-        $modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] = array($modern_footnotes_all_posts_data[$scope_id]['footnotes']);
-      } else {
-        $modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'][] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
-      }
-      $modern_footnotes_all_posts_data[$scope_id]['footnotes'] = array();
     }
   }
   
@@ -180,28 +164,40 @@ function modern_footnotes_func($atts, $content = "") {
   if (isset($modern_footnotes_options['use_title_tags_for_footnote_links']) && $modern_footnotes_options['use_title_tags_for_footnote_links']) {
     $additional_attributes .= ' title="' . str_replace('"','&quot;', strip_tags($content)) . '" ';
   }
+
+  //calculate an id that will be unique to each footnote within the scope of the post
+  $id = 1;
+  if (isset($modern_footnotes_all_posts_data[$scope_id])) {
+    $current_scope_footnotes = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+    $last_id = $current_scope_footnotes[count($current_scope_footnotes) - 1]['id'];
+    $id = $last_id + 1;
+  }
+
+  $footnote = array(
+      'reference_label' => $reference_label,
+      'content' => $content,
+      'id' => $id
+  );
   
   if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
     $modern_footnotes_all_posts_data[$scope_id] = array(
       'modern_footnotes_post_number' => $GLOBALS['current_modern_footnotes_post_number'],
       'used_reference_numbers' => array($reference_label),
-      'footnotes' => array(
-        $reference_label => $content
-      )
+      'footnotes' => array($footnote)
     );
     $GLOBALS['current_modern_footnotes_post_number']++;
   } else {
     if (is_numeric($reference_label)) {
       $modern_footnotes_all_posts_data[$scope_id]['used_reference_numbers'][] = $reference_label;
     }
-    $modern_footnotes_all_posts_data[$scope_id]['footnotes'][$reference_label] = $content;
+    $modern_footnotes_all_posts_data[$scope_id]['footnotes'][] = $footnote;
   }
 
   $display_footnotes_at_bottom_of_posts = isset($modern_footnotes_options['display_footnotes_at_bottom_of_posts']) && $modern_footnotes_options['display_footnotes_at_bottom_of_posts'];
   $show_jump_to_list_link = isset($modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes']) && $modern_footnotes_options['modern_footnotes_show_jump_to_list_link_in_footnotes'];
 
   //create a unique ID to use in HTML
-  $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', esc_attr($reference_label));
+  $content_id = "mfn-content-" . $scope_id . '-' . preg_replace('/[^a-zA-Z0-9-_]/i', '', esc_attr($id));
 
   if (isset($atts['for_rss_feed']) && $atts['for_rss_feed']) {
     $content = '<sup class="modern-footnotes-footnote ' . $additional_classes . '">' . esc_html($reference_label) . '</sup>';
@@ -215,7 +211,7 @@ function modern_footnotes_func($atts, $content = "") {
                 '<span role="tooltip" class="modern-footnotes-footnote__note" tabindex="0" data-mfn="' . str_replace('"',"\\\"", esc_attr($reference_label)) . '">' .
                   $content . 
                   ($display_footnotes_at_bottom_of_posts && $show_jump_to_list_link ?
-                    '<a href="#footnote-' . esc_attr($scope_id) . '-' . esc_attr($reference_label) . '" class="modern-footnotes-scroll-to-reference" aria-label="Jump to footnote ' . esc_attr($reference_label) . '">↓</a>' :
+                    '<a href="#footnote-' . esc_attr($scope_id) . '-' . esc_attr($id) . '" class="modern-footnotes-scroll-to-reference" aria-label="Jump to footnote ' . esc_attr($reference_label) . '">↓</a>' :
                     '')
                   . 
                 '</span>'; //use a block element, not an inline element: otherwise, footnotes with line breaks won't display correctly
@@ -365,19 +361,11 @@ function modern_footnotes_strip_rendered_mfn_tag( $content ) {
   if (empty($modern_footnotes_all_posts_data[$scope_id])) {
     return $content;
   }
-  $footnotes_used = array();
-  if (isset($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'])) {
-    foreach ($modern_footnotes_all_posts_data[$scope_id]['footnotes_previously_used'] as $f) {
-      $footnotes_used[] = $f;
-    }
-  }
-  $footnotes_used[] = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
+  $footnotes = $modern_footnotes_all_posts_data[$scope_id]['footnotes'];
 
-  foreach ($footnotes_used as $footnote_list) {
-    foreach($footnote_list as $reference_label => $footnote_content) {
-      if (!empty($footnote_content)) { //ensure footnote_content is not empty: otherwise, we may be replacing just a number, which is far too common
-        $content = str_replace($reference_label . wp_strip_all_tags($footnote_content), '', $content);
-      }
+  foreach ($footnotes as $footnote) {
+    if (!empty($footnote['content'])) { //ensure footnote_content is not empty: otherwise, we may be replacing just a number, which is far too common
+      $content = str_replace($footnote['reference_label'] . wp_strip_all_tags($footnote['content']), '', $content);
     }
   }
 
