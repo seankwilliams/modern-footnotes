@@ -72,7 +72,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
   if ($for_rss_feed) {
     foreach ($footnotes as $footnote) {
       $content .= '<div>';
-      $content .= $footnote['reference_label'];
+      $content .= esc_html($footnote['reference_label']);
       $content .= '&nbsp;&nbsp;&nbsp;&nbsp;';
       $content .= $footnote['content'];
       $content .= '</div>';
@@ -85,7 +85,7 @@ function modern_footnotes_list_footnotes($show_only_when_printing = FALSE, $hide
       . '">';
     foreach ($footnotes as $footnote) {
       $content .= '<li id="footnote-' . esc_attr($scope_id) . '-' . esc_attr($footnote['id']) . '">';
-      $content .= '<span>' . $footnote['reference_label'] . '</span>';
+      $content .= '<span>' . esc_html($footnote['reference_label']) . '</span>';
       $content .= '<div>';
       $content .= $footnote['content'];
       $content .= ' <a href="#mfn-content-' . esc_attr($scope_id) . '-' . esc_attr($footnote['id']) . '" class="modern-footnotes-scroll-to-footnote" aria-label="Back to reference ' . esc_attr($footnote['reference_label']) . ' in text">↩︎</a>'; 
