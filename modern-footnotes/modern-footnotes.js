@@ -44,25 +44,25 @@ jQuery(function($) {
     }
     window.modernFootnotesActivelyHovering = false;
   });
-    $(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
-        var $footnoteContent = $(this).parent().nextAll(next).eq(0);
-        if ($footnoteContent.is(":hidden")) {
-            if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
-        modern_footnotes_show_tooltip_footnote($(this).parent());
-        $(this).attr("aria-pressed","true");
-            } else if ($(window).width() < 768 || $(this).parent().is(":not(.modern-footnotes-footnote--hover-on-desktop)")) {
-                //expandable style
-        $(this).attr("aria-pressed","true");
-                $footnoteContent
-                    .removeClass('modern-footnotes-footnote__note--tooltip')
-                    .addClass('modern-footnotes-footnote__note--expandable')
-                    .css('display', 'block');
-                $(this).data('unopenedContent', $(this).html());
-                $(this).html('x');
-            } else {
+  $(document).on('click', '.modern-footnotes-footnote a', null, function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    next = '.modern-footnotes-footnote__note[data-mfn="' + $(this).parent().attr("data-mfn") + '"]';
+    var $footnoteContent = $(this).parent().nextAll(next).eq(0);
+    if ($footnoteContent.is(":hidden")) {
+      if ($(window).width() >= 768 && $(this).parent().is(":not(.modern-footnotes-footnote--expands-on-desktop)")) { //use same size as bootstrap for mobile
+    modern_footnotes_show_tooltip_footnote($(this).parent());
+    $(this).attr("aria-pressed","true");
+      } else if ($(window).width() < 768 || $(this).parent().is(":not(.modern-footnotes-footnote--hover-on-desktop)")) {
+        //expandable style
+    $(this).attr("aria-pressed","true");
+        $footnoteContent
+          .removeClass('modern-footnotes-footnote__note--tooltip')
+          .addClass('modern-footnotes-footnote__note--expandable')
+          .css('display', 'block');
+        $(this).data('unopenedContent', $(this).html());
+        $(this).html('x');
+      } else {
         //do nothing when user is in desktop + .modern-footnotes-footnote--hover-on-desktop is present (behavior is handled by hovering, in that case
       }
         } else {
