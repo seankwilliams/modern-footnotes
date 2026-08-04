@@ -70,6 +70,11 @@
 	margin-bottom: 1em;
 }
 
+.modern-footnotes-scroll-to-reference {
+	font-size: 110%; /* make arrow display slightly bigger */
+	margin-left: 0.2em;
+}
+
 .modern-footnotes-list {
   list-style-type: none;
   font-size: 0.8em;
@@ -99,5 +104,8 @@
   }
   .modern-footnotes-list--hide-for-print, .modern-footnotes-list-heading--hide-for-print {
     display: none;
+  }
+  .modern-footnotes-scroll-to-reference, .modern-footnotes-scroll-to-footnote {
+  	display: none;
   }
 }
