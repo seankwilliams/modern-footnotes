@@ -178,6 +178,10 @@ function modern_footnotes_func($atts, $content = "") {
       'content' => $content,
       'id' => $id
   );
+
+  if (!isset($GLOBALS['current_modern_footnotes_post_number'])) {
+ 	 $GLOBALS['current_modern_footnotes_post_number'] = 0;
+  }
   
   if (!isset($modern_footnotes_all_posts_data[$scope_id])) {
     $modern_footnotes_all_posts_data[$scope_id] = array(
