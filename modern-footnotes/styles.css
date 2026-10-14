@@ -39,12 +39,9 @@
 	color: #777;
 }
 .modern-footnotes-footnote__note a {
-	display: inline-block;
 	max-width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-  vertical-align: bottom;
+	overflow-wrap: break-word;
+	word-break: break-word;
 }
 /* default tooltip style for desktop */
 .modern-footnotes-footnote__note--tooltip {
